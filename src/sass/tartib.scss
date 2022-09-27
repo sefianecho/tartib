@@ -1,0 +1,19 @@
+.tartib {
+
+
+    &__item {
+        user-select: none;
+        box-sizing: border-box;
+
+        &--dragged {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    }
+
+    &__placeholder {
+        visibility: hidden;
+    }
+
+}
