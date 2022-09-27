@@ -1,4 +1,5 @@
-import { INSERT_BEFORE, ROOT } from "./constants";
+import { floor, INSERT_BEFORE, ROOT } from "./constants";
+import { getPlaceholderPosition } from "./position";
 import { getBounds, insertElement } from "./utils/dom";
 
 export const sort = (instance) => {
@@ -55,6 +56,7 @@ export const sort = (instance) => {
      */
     const dragMove = e => {
         if (isDragging) {
+            let target = e.target;
             let mouseX = e.clientX;
             let mouseY = e.clientY;
 
@@ -62,20 +64,51 @@ export const sort = (instance) => {
                 draggedItem.classList.add('tartib__item--dragged');
                 draggedItem.style.width = draggedItemRect.width + 'px';
                 draggedItem.style.height = draggedItemRect.height + 'px';
+                placeholder.style.height = draggedItemRect.height + 'px';
+                // placeholder.style.width = draggedItemRect.width + 'px';
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
-
-                placeholder.style.height = draggedItemRect.height + 'px';
-                placeholder.style.width = draggedItemRect.width + 'px';
-
                 startMoving = true;
             }
+
+
+            let { top, right, bottom, left } = getBounds(placeholder);
+            let isSortingY = mouseX <= floor(right) && mouseX >= floor(left);
+            let isSortingX = mouseY <= floor(bottom) && mouseY >= floor(top);
 
             // Move Item.
             draggedItem.style.top = mouseY - cursorY + 'px';
             draggedItem.style.left = mouseX - cursorX + 'px';
 
+            /**
+             * Sort items.
+             */
+            if (target.closest('.tartib__item') && target !== placeholder) {
+                let targetBounds = getBounds(target);
+                let position;
 
+                // Sorting item diagonally.
+                if (! isSortingX && ! isSortingY) {
+                    // Get position horizontally, pass it to the vertical position.
+                    position = getPlaceholderPosition(targetBounds, startY, mouseY, true, getPlaceholderPosition(targetBounds, startX, mouseX));
+                } else {
+                    // Sorting item vertically.
+                    if (! isSortingX) {
+                        position = getPlaceholderPosition(targetBounds, startY, mouseY, true);
+                    }
+
+                    // Sorting item horizontally.
+                    if (! isSortingY) {
+                        position = getPlaceholderPosition(targetBounds, startX, mouseX);
+                    }
+                }
+
+                if (position) {
+                    insertElement(position, target, placeholder);
+                    startY = mouseY;
+                    startX = mouseX;
+                }
+            }
         }
     }
 
