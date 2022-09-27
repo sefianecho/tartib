@@ -1,5 +1,5 @@
-import { ROOT } from "./constants";
-import { getBounds } from "./utils/dom";
+import { INSERT_BEFORE, ROOT } from "./constants";
+import { getBounds, insertElement } from "./utils/dom";
 
 export const sort = (instance) => {
 
@@ -33,8 +33,10 @@ export const sort = (instance) => {
         draggedItem = e.target.closest('.tartib__item');
 
         if (draggedItem) {
-            draggedItemRect = getBounds(draggedItem);
+            placeholder = draggedItem.cloneNode();
+            placeholder.classList.add('tartib__placeholder');
 
+            draggedItemRect = getBounds(draggedItem);
             startX = e.clientX;
             startY = e.clientY;
 
@@ -60,6 +62,12 @@ export const sort = (instance) => {
                 draggedItem.classList.add('tartib__item--dragged');
                 draggedItem.style.width = draggedItemRect.width + 'px';
                 draggedItem.style.height = draggedItemRect.height + 'px';
+
+                insertElement(INSERT_BEFORE, draggedItem, placeholder);
+
+                placeholder.style.height = draggedItemRect.height + 'px';
+                placeholder.style.width = draggedItemRect.width + 'px';
+
                 startMoving = true;
             }
 
@@ -80,6 +88,9 @@ export const sort = (instance) => {
         if (isDragging) {
             draggedItem.style = '';
             draggedItem.classList.remove('tartib__item--dragged');
+            if (placeholder.parentElement === list) {
+                list.replaceChild(draggedItem, placeholder);
+            }
             isDragging = startMoving = false;
         }
     }
