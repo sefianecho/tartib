@@ -12,3 +12,12 @@ import { isString } from "./util";
 export const getElement = (ref, context, all) => isString(ref) ? ref && (context || ROOT)['querySelector' + (all ? 'All' : '')](ref)
                                 : ref instanceof Element ? ref
                                 : null;
+
+
+/**
+ * Gets element bounds.
+ *
+ * @param {HTMLElement} el Element.
+ * @returns {Object}
+ */
+export const getBounds = (el) => el && el.getBoundingClientRect();
