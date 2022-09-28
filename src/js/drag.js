@@ -1,8 +1,7 @@
 import { floor, HTML, INSERT_BEFORE, ROOT } from "./constants";
 import { getPlaceholderPosition } from "./position";
-import { scroll } from "./scroll";
+import { autoScroll } from "./autoScroll";
 import { getBounds, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
-import { validateEvent } from "./utils/util";
 
 export const sort = (tartib) => {
 
@@ -107,14 +106,14 @@ export const sort = (tartib) => {
                     }
                 }
 
-                // Scroll Vertically.
+                // Auto Scroll Vertically.
                 if (isSortingY) {
-                    scroll(scrollable, bounds, itemBounds, true);
+                    autoScroll(scrollable, bounds, itemBounds, true);
                 }
 
-                // Scroll Horizontally.
+                // Auto Scroll Horizontally.
                 if (isSortingX) {
-                    scroll(scrollable, bounds, itemBounds, false);
+                    autoScroll(scrollable, bounds, itemBounds, false);
                 }
             });
 
