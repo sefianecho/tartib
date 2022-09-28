@@ -8,4 +8,6 @@ export const defaults = {
     placeholder: '',
 
     dragHandle: '',
+
+    axis: false,
 }

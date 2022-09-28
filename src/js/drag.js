@@ -65,8 +65,7 @@ export const sort = (tartib) => {
             let { target, clientX: mouseX, clientY: mouseY } = e;
 
             // Move Item.
-            draggedItem.style.top = mouseY - dragPoint.y + 'px';
-            draggedItem.style.left = mouseX - dragPoint.x + 'px';
+            setItemPosition(mouseX, mouseY, config.axis);
 
             let itemBounds = getBounds(draggedItem);
             let { top, right, bottom, left } = getBounds(placeholder);
@@ -75,9 +74,9 @@ export const sort = (tartib) => {
 
 
             if (! startMoving) {
-
                 let { cursor, elevation, placeholder: placeholderClassname } = config;
 
+                setItemPosition(mouseX, mouseY);
 
                 draggedItem.classList.add('tartib__item--dragged');
                 draggedItem.style.width = itemBounds.width + 'px';
@@ -135,7 +134,7 @@ export const sort = (tartib) => {
              */
             target = target.closest('.tartib__item');
 
-            if (target && target !== placeholder) {
+            if (target && list.contains(target) && target !== placeholder) {
                 let targetBounds = getBounds(target);
                 let position;
 
@@ -182,6 +181,17 @@ export const sort = (tartib) => {
         }
     }
 
+
+    const setItemPosition = (x, y, axis) => {
+
+        if (axis !== 'x') {
+            draggedItem.style.top = y - dragPoint.y + 'px';
+        }
+
+        if (axis !== 'y') {
+            draggedItem.style.left = x - dragPoint.x + 'px';
+        }
+    }
 
     list.addEventListener('pointerdown', dragStart);
     ROOT.addEventListener('pointermove', dragMove);
