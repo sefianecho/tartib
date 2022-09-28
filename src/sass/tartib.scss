@@ -4,6 +4,8 @@
     &__item {
         user-select: none;
         box-sizing: border-box;
+        touch-action: none;
+        
 
         &--dragged {
             position: fixed;

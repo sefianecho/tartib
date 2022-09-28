@@ -35,18 +35,12 @@ export const sort = (tartib) => {
      * @param {Event} e - Mousedown.
      */
     const dragStart = e => {
-
-        e = validateEvent(e);
-
-        if (! e) {
-            return;
-        }
-
-        let target = e.target;
-
-        draggedItem = target.closest('.tartib__item');
+        draggedItem = e.target.closest('.tartib__item');
 
         if (draggedItem) {
+
+            draggedItem.releasePointerCapture(e.pointerId);
+
             placeholder = draggedItem.cloneNode();
             placeholder.classList.add('tartib__placeholder');
 
@@ -59,7 +53,6 @@ export const sort = (tartib) => {
 
             scrollableAncestors = getScrollableAncestors(list);
 
-            // console.log(scrollableAncestors);
             isDragging = true;
         }
     }
@@ -73,9 +66,7 @@ export const sort = (tartib) => {
     const dragMove = e => {
         if (isDragging) {
 
-
             let { target, clientX: mouseX, clientY: mouseY } = e;
-
 
             if (! startMoving) {
                 draggedItem.classList.add('tartib__item--dragged');
@@ -176,9 +167,7 @@ export const sort = (tartib) => {
     }
 
 
-    list.addEventListener('mousedown', dragStart);
-
-    ROOT.addEventListener('pointermove', dragMove, { passive: false });
-
-    ROOT.addEventListener('mouseup', dragEnd);
+    list.addEventListener('pointerdown', dragStart);
+    ROOT.addEventListener('pointermove', dragMove);
+    ROOT.addEventListener('pointerup', dragEnd);
 }
