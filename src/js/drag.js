@@ -1,16 +1,20 @@
-import { floor, INSERT_BEFORE, ROOT } from "./constants";
+import { floor, HTML, INSERT_BEFORE, ROOT } from "./constants";
 import { getPlaceholderPosition } from "./position";
-import { getBounds, insertElement } from "./utils/dom";
+import { scroll } from "./scroll";
+import { getBounds, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
+import { validateEvent } from "./utils/util";
 
-export const sort = (instance) => {
+export const sort = (tartib) => {
 
-    const list = instance.el;
+    const list = tartib.el;
 
     let draggedItem;
 
     let placeholder;
 
     let draggedItemRect;
+
+    let scrollableAncestors;
 
     let startX;
 
@@ -31,7 +35,16 @@ export const sort = (instance) => {
      * @param {Event} e - Mousedown.
      */
     const dragStart = e => {
-        draggedItem = e.target.closest('.tartib__item');
+
+        e = validateEvent(e);
+
+        if (! e) {
+            return;
+        }
+
+        let target = e.target;
+
+        draggedItem = target.closest('.tartib__item');
 
         if (draggedItem) {
             placeholder = draggedItem.cloneNode();
@@ -44,6 +57,9 @@ export const sort = (instance) => {
             cursorX = startX - draggedItemRect.left;
             cursorY = startY - draggedItemRect.top;
 
+            scrollableAncestors = getScrollableAncestors(list);
+
+            // console.log(scrollableAncestors);
             isDragging = true;
         }
     }
@@ -56,29 +72,60 @@ export const sort = (instance) => {
      */
     const dragMove = e => {
         if (isDragging) {
-            let target = e.target;
-            let mouseX = e.clientX;
-            let mouseY = e.clientY;
+
+
+            let { target, clientX: mouseX, clientY: mouseY } = e;
+
 
             if (! startMoving) {
                 draggedItem.classList.add('tartib__item--dragged');
                 draggedItem.style.width = draggedItemRect.width + 'px';
                 draggedItem.style.height = draggedItemRect.height + 'px';
-                placeholder.style.height = draggedItemRect.height + 'px';
-                // placeholder.style.width = draggedItemRect.width + 'px';
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
+
+                placeholder.style.height = draggedItemRect.height + 'px';
                 startMoving = true;
             }
-
-
-            let { top, right, bottom, left } = getBounds(placeholder);
-            let isSortingY = mouseX <= floor(right) && mouseX >= floor(left);
-            let isSortingX = mouseY <= floor(bottom) && mouseY >= floor(top);
 
             // Move Item.
             draggedItem.style.top = mouseY - cursorY + 'px';
             draggedItem.style.left = mouseX - cursorX + 'px';
+
+            let itemBounds = getBounds(draggedItem);
+            let { top, right, bottom, left } = getBounds(placeholder);
+            let isSortingY = mouseX <= floor(right) && mouseX >= floor(left);
+            let isSortingX = mouseY <= floor(bottom) && mouseY >= floor(top);
+
+            /**
+             * Scroll to view where to drop.
+             */
+            scrollableAncestors.forEach(scrollable => {
+                let bounds = getBounds(scrollable);
+
+                if (scrollable === HTML) {
+                    let domHeight = HTML.clientHeight;
+
+                    bounds = {
+                        top: 0,
+                        left: 0,
+                        right: bounds.right,
+                        width: bounds.width,
+                        bottom: domHeight,
+                        height: domHeight
+                    }
+                }
+
+                // Scroll Vertically.
+                if (isSortingY) {
+                    scroll(scrollable, bounds, itemBounds, true);
+                }
+
+                // Scroll Horizontally.
+                if (isSortingX) {
+                    scroll(scrollable, bounds, itemBounds, false);
+                }
+            });
 
             /**
              * Sort items.
@@ -121,7 +168,7 @@ export const sort = (instance) => {
         if (isDragging) {
             draggedItem.style = '';
             draggedItem.classList.remove('tartib__item--dragged');
-            if (placeholder.parentElement === list) {
+            if (getParent(placeholder) === list) {
                 list.replaceChild(draggedItem, placeholder);
             }
             isDragging = startMoving = false;
@@ -130,6 +177,8 @@ export const sort = (instance) => {
 
 
     list.addEventListener('mousedown', dragStart);
-    ROOT.addEventListener('mousemove', dragMove);
+
+    ROOT.addEventListener('pointermove', dragMove, { passive: false });
+
     ROOT.addEventListener('mouseup', dragEnd);
 }
