@@ -65,7 +65,7 @@ export const sort = (tartib) => {
 
             if (! startMoving) {
 
-                let { cursor } = tartib.config;
+                let { cursor, elevation } = tartib.config;
 
 
                 draggedItem.classList.add('tartib__item--dragged');
@@ -74,6 +74,10 @@ export const sort = (tartib) => {
 
                 if (cursor) {
                     HTML.style.cursor = cursor;
+                }
+
+                if (elevation) {
+                    draggedItem.classList.add('tartib--elevation');
                 }
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
@@ -161,7 +165,7 @@ export const sort = (tartib) => {
     const dragEnd = e => {
         if (isDragging) {
             draggedItem.style = '';
-            draggedItem.classList.remove('tartib__item--dragged');
+            draggedItem.classList.remove('tartib__item--dragged', 'tartib--elevation');
             if (getParent(placeholder) === list) {
                 list.replaceChild(draggedItem, placeholder);
                 placeholder = null;
