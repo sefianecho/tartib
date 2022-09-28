@@ -2,6 +2,7 @@ import { floor, HTML, INSERT_BEFORE, ROOT } from "./constants";
 import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
 import { getBounds, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
+import { getDragPoint } from "./dragPoint";
 
 export const sort = (tartib) => {
 
@@ -19,9 +20,7 @@ export const sort = (tartib) => {
 
     let startY;
 
-    let cursorX;
-
-    let cursorY;
+    let dragPoint = {}
 
     let startMoving = false;
 
@@ -47,15 +46,13 @@ export const sort = (tartib) => {
             startX = e.clientX;
             startY = e.clientY;
 
-            cursorX = startX - draggedItemRect.left;
-            cursorY = startY - draggedItemRect.top;
+            dragPoint = getDragPoint(draggedItem, tartib.config.dragFrom, { x: startX, y: startY });
 
             scrollableAncestors = getScrollableAncestors(list);
 
             isDragging = true;
         }
     }
-
 
     /**
      * Drags item.
@@ -64,7 +61,6 @@ export const sort = (tartib) => {
      */
     const dragMove = e => {
         if (isDragging) {
-
             let { target, clientX: mouseX, clientY: mouseY } = e;
 
             if (! startMoving) {
@@ -79,8 +75,8 @@ export const sort = (tartib) => {
             }
 
             // Move Item.
-            draggedItem.style.top = mouseY - cursorY + 'px';
-            draggedItem.style.left = mouseX - cursorX + 'px';
+            draggedItem.style.top = mouseY - dragPoint.y + 'px';
+            draggedItem.style.left = mouseX - dragPoint.x + 'px';
 
             let itemBounds = getBounds(draggedItem);
             let { top, right, bottom, left } = getBounds(placeholder);
@@ -160,6 +156,7 @@ export const sort = (tartib) => {
             draggedItem.classList.remove('tartib__item--dragged');
             if (getParent(placeholder) === list) {
                 list.replaceChild(draggedItem, placeholder);
+                placeholder = null;
             }
             isDragging = startMoving = false;
         }
