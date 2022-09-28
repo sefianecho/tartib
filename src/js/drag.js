@@ -99,7 +99,7 @@ export const sort = (tartib) => {
                     bounds = {
                         top: 0,
                         left: 0,
-                        right: bounds.right,
+                        right: bounds.width,
                         width: bounds.width,
                         bottom: domHeight,
                         height: domHeight
