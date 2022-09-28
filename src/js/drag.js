@@ -40,7 +40,7 @@ export const sort = (tartib) => {
             draggedItem.releasePointerCapture(e.pointerId);
 
             placeholder = draggedItem.cloneNode();
-            placeholder.classList.add('tartib__placeholder');
+            placeholder.classList.add('tartib__placeholder')
 
             draggedItemRect = getBounds(draggedItem);
             startX = e.clientX;
@@ -64,9 +64,17 @@ export const sort = (tartib) => {
             let { target, clientX: mouseX, clientY: mouseY } = e;
 
             if (! startMoving) {
+
+                let { cursor } = tartib.config;
+
+
                 draggedItem.classList.add('tartib__item--dragged');
                 draggedItem.style.width = draggedItemRect.width + 'px';
                 draggedItem.style.height = draggedItemRect.height + 'px';
+
+                if (cursor) {
+                    HTML.style.cursor = cursor;
+                }
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
 
@@ -158,6 +166,7 @@ export const sort = (tartib) => {
                 list.replaceChild(draggedItem, placeholder);
                 placeholder = null;
             }
+            HTML.style.cursor = '';
             isDragging = startMoving = false;
         }
     }
