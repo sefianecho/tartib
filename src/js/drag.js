@@ -40,7 +40,7 @@ export const sort = (tartib) => {
             draggedItem.releasePointerCapture(e.pointerId);
 
             placeholder = draggedItem.cloneNode();
-            placeholder.classList.add('tartib__placeholder')
+            
 
             draggedItemRect = getBounds(draggedItem);
             startX = e.clientX;
@@ -65,7 +65,7 @@ export const sort = (tartib) => {
 
             if (! startMoving) {
 
-                let { cursor, elevation } = tartib.config;
+                let { cursor, elevation, placeholder: placeholderClassname } = tartib.config;
 
 
                 draggedItem.classList.add('tartib__item--dragged');
@@ -79,6 +79,8 @@ export const sort = (tartib) => {
                 if (elevation) {
                     draggedItem.classList.add('tartib--elevation');
                 }
+
+                placeholder.classList.add(placeholderClassname || 'tartib__placeholder');
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
 

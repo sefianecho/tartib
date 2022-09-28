@@ -4,4 +4,6 @@ export const defaults = {
     cursor: '',
 
     elevation: true,
+
+    placeholder: '',
 }
