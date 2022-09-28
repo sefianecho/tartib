@@ -1,18 +1,16 @@
 import { floor, HTML, INSERT_BEFORE, ROOT } from "./constants";
 import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
-import { getBounds, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
+import { getBounds, getElement, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
 import { getDragPoint } from "./dragPoint";
 
 export const sort = (tartib) => {
 
-    const list = tartib.el;
+    const { el: list, config } = tartib;
 
     let draggedItem;
 
     let placeholder;
-
-    let draggedItemRect;
 
     let scrollableAncestors;
 
@@ -33,25 +31,28 @@ export const sort = (tartib) => {
      * @param {Event} e - Mousedown.
      */
     const dragStart = e => {
-        draggedItem = e.target.closest('.tartib__item');
 
-        if (draggedItem) {
+        let { dragHandle } = config;
+        let target = e.target;
 
-            draggedItem.releasePointerCapture(e.pointerId);
+        draggedItem = target.closest('.tartib__item');
 
-            placeholder = draggedItem.cloneNode();
-            
-
-            draggedItemRect = getBounds(draggedItem);
-            startX = e.clientX;
-            startY = e.clientY;
-
-            dragPoint = getDragPoint(draggedItem, tartib.config.dragFrom, { x: startX, y: startY });
-
-            scrollableAncestors = getScrollableAncestors(list);
-
-            isDragging = true;
+        if (!draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
+            return;
         }
+
+        draggedItem.releasePointerCapture(e.pointerId);
+
+        placeholder = draggedItem.cloneNode();
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        dragPoint = getDragPoint(draggedItem, config.dragFrom, { x: startX, y: startY });
+
+        scrollableAncestors = getScrollableAncestors(list);
+
+        isDragging = true;
     }
 
     /**
@@ -63,14 +64,24 @@ export const sort = (tartib) => {
         if (isDragging) {
             let { target, clientX: mouseX, clientY: mouseY } = e;
 
+            // Move Item.
+            draggedItem.style.top = mouseY - dragPoint.y + 'px';
+            draggedItem.style.left = mouseX - dragPoint.x + 'px';
+
+            let itemBounds = getBounds(draggedItem);
+            let { top, right, bottom, left } = getBounds(placeholder);
+            let isSortingY = mouseX <= floor(right) && mouseX >= floor(left);
+            let isSortingX = mouseY <= floor(bottom) && mouseY >= floor(top);
+
+
             if (! startMoving) {
 
-                let { cursor, elevation, placeholder: placeholderClassname } = tartib.config;
+                let { cursor, elevation, placeholder: placeholderClassname } = config;
 
 
                 draggedItem.classList.add('tartib__item--dragged');
-                draggedItem.style.width = draggedItemRect.width + 'px';
-                draggedItem.style.height = draggedItemRect.height + 'px';
+                draggedItem.style.width = itemBounds.width + 'px';
+                draggedItem.style.height = itemBounds.height + 'px';
 
                 if (cursor) {
                     HTML.style.cursor = cursor;
@@ -84,18 +95,9 @@ export const sort = (tartib) => {
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
 
-                placeholder.style.height = draggedItemRect.height + 'px';
+                placeholder.style.height = itemBounds.height + 'px';
                 startMoving = true;
             }
-
-            // Move Item.
-            draggedItem.style.top = mouseY - dragPoint.y + 'px';
-            draggedItem.style.left = mouseX - dragPoint.x + 'px';
-
-            let itemBounds = getBounds(draggedItem);
-            let { top, right, bottom, left } = getBounds(placeholder);
-            let isSortingY = mouseX <= floor(right) && mouseX >= floor(left);
-            let isSortingX = mouseY <= floor(bottom) && mouseY >= floor(top);
 
             /**
              * Scroll to view where to drop.
@@ -129,8 +131,11 @@ export const sort = (tartib) => {
 
             /**
              * Sort items.
+             * 
              */
-            if (target.closest('.tartib__item') && target !== placeholder) {
+            target = target.closest('.tartib__item');
+
+            if (target && target !== placeholder) {
                 let targetBounds = getBounds(target);
                 let position;
 

@@ -6,4 +6,6 @@ export const defaults = {
     elevation: true,
 
     placeholder: '',
+
+    dragHandle: '',
 }
