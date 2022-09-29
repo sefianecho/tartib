@@ -12,4 +12,6 @@ export const defaults = {
     axis: false,
 
     disabled: false,
+
+    opacity: false,
 }

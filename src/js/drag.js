@@ -66,7 +66,7 @@ export const sort = (tartib) => {
             let itemBounds;
 
             if (! startMoving) {
-                let { cursor, elevation, placeholder: placeholderClassname } = config;
+                let { cursor, elevation, placeholder: placeholderClassname, opacity } = config;
 
                 itemBounds = getBounds(draggedItem);
                 setItemPosition(mouseX, mouseY);
@@ -81,6 +81,10 @@ export const sort = (tartib) => {
 
                 if (elevation) {
                     draggedItem.classList.add('tartib--elevation');
+                }
+
+                if (opacity > 0 && opacity < 1) {
+                    draggedItem.style.opacity = opacity;
                 }
 
                 placeholder.classList.add(placeholderClassname || 'tartib__placeholder');
