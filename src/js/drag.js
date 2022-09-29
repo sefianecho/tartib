@@ -14,9 +14,7 @@ export const sort = (tartib) => {
 
     let scrollableAncestors;
 
-    let startX;
-
-    let startY;
+    let startPoint = {}
 
     let dragPoint = {}
 
@@ -32,7 +30,7 @@ export const sort = (tartib) => {
      */
     const dragStart = e => {
 
-        let { dragHandle } = config;
+        let { dragHandle, dragFrom } = config;
         let target = e.target;
 
         draggedItem = target.closest('.tartib__item');
@@ -45,10 +43,12 @@ export const sort = (tartib) => {
 
         placeholder = draggedItem.cloneNode();
 
-        startX = e.clientX;
-        startY = e.clientY;
+        startPoint = {
+            x: e.clientX,
+            y: e.clientY
+        }
 
-        dragPoint = getDragPoint(draggedItem, config.dragFrom, { x: startX, y: startY });
+        dragPoint = getDragPoint(draggedItem, dragFrom, startPoint);
 
         scrollableAncestors = getScrollableAncestors(list);
 
@@ -63,19 +63,12 @@ export const sort = (tartib) => {
     const dragMove = e => {
         if (isDragging) {
             let { target, clientX: mouseX, clientY: mouseY } = e;
-
-            // Move Item.
-            setItemPosition(mouseX, mouseY, config.axis);
-
-            let itemBounds = getBounds(draggedItem);
-            let { top, right, bottom, left } = getBounds(placeholder);
-            let isSortingY = mouseX <= floor(right) && mouseX >= floor(left);
-            let isSortingX = mouseY <= floor(bottom) && mouseY >= floor(top);
-
+            let itemBounds;
 
             if (! startMoving) {
                 let { cursor, elevation, placeholder: placeholderClassname } = config;
 
+                itemBounds = getBounds(draggedItem);
                 setItemPosition(mouseX, mouseY);
 
                 draggedItem.classList.add('tartib__item--dragged');
@@ -97,6 +90,9 @@ export const sort = (tartib) => {
                 placeholder.style.height = itemBounds.height + 'px';
                 startMoving = true;
             }
+            // Move Item.
+            itemBounds = getBounds(draggedItem);
+            setItemPosition(mouseX, mouseY, config.axis);
 
             /**
              * Scroll to view where to drop.
@@ -106,26 +102,22 @@ export const sort = (tartib) => {
 
                 if (scrollable === HTML) {
                     let domHeight = HTML.clientHeight;
+                    let width = bounds.width;
 
                     bounds = {
                         top: 0,
                         left: 0,
-                        right: bounds.width,
-                        width: bounds.width,
+                        right: width,
                         bottom: domHeight,
-                        height: domHeight
+                        height: domHeight,
+                        width
                     }
                 }
 
                 // Auto Scroll Vertically.
-                if (isSortingY) {
                     autoScroll(scrollable, bounds, itemBounds, true);
-                }
-
                 // Auto Scroll Horizontally.
-                if (isSortingX) {
                     autoScroll(scrollable, bounds, itemBounds, false);
-                }
             });
 
             /**
@@ -136,28 +128,31 @@ export const sort = (tartib) => {
 
             if (target && list.contains(target) && target !== placeholder) {
                 let targetBounds = getBounds(target);
+                let { top, right, bottom, left } = getBounds(placeholder);
+                let movingVertically = mouseX <= floor(right) && mouseX >= floor(left);
+                let movingHorizontally = mouseY <= floor(bottom) && mouseY >= floor(top);
                 let position;
 
                 // Sorting item diagonally.
-                if (! isSortingX && ! isSortingY) {
+                if (! movingHorizontally && ! movingVertically) {
                     // Get position horizontally, pass it to the vertical position.
-                    position = getPlaceholderPosition(targetBounds, startY, mouseY, true, getPlaceholderPosition(targetBounds, startX, mouseX));
+                    position = getPlaceholderPosition(targetBounds, startPoint, mouseY, true, getPlaceholderPosition(targetBounds, startPoint, mouseX));
                 } else {
                     // Sorting item vertically.
-                    if (! isSortingX) {
-                        position = getPlaceholderPosition(targetBounds, startY, mouseY, true);
+                    if (! movingHorizontally) {
+                        position = getPlaceholderPosition(targetBounds, startPoint, mouseY, true);
                     }
 
                     // Sorting item horizontally.
-                    if (! isSortingY) {
-                        position = getPlaceholderPosition(targetBounds, startX, mouseX);
+                    if (! movingVertically) {
+                        position = getPlaceholderPosition(targetBounds, startPoint, mouseX);
                     }
                 }
 
                 if (position) {
                     insertElement(position, target, placeholder);
-                    startY = mouseY;
-                    startX = mouseX;
+                    startPoint.y = mouseY;
+                    startPoint.x = mouseX;
                 }
             }
         }
@@ -181,9 +176,14 @@ export const sort = (tartib) => {
         }
     }
 
-
+    /**
+     * Sets item position.
+     *
+     * @param {Number} x - Mouse X coordinate.
+     * @param {Number} y - Mouse Y coordinate.
+     * @param {Object} axis - Axis option.
+     */
     const setItemPosition = (x, y, axis) => {
-
         if (axis !== 'x') {
             draggedItem.style.top = y - dragPoint.y + 'px';
         }
