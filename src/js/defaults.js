@@ -10,4 +10,6 @@ export const defaults = {
     dragHandle: '',
 
     axis: false,
+
+    disabled: false,
 }

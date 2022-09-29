@@ -30,12 +30,12 @@ export const sort = (tartib) => {
      */
     const dragStart = e => {
 
-        let { dragHandle, dragFrom } = config;
+        let { dragHandle, dragFrom, disabled } = config;
         let target = e.target;
 
         draggedItem = target.closest('.tartib__item');
 
-        if (!draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
+        if (disabled || !draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
             return;
         }
 
