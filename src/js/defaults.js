@@ -14,4 +14,6 @@ export const defaults = {
     disabled: false,
 
     opacity: false,
+
+    autoScroll: true,
 }

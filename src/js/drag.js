@@ -30,7 +30,7 @@ export const sort = (tartib) => {
      */
     const dragStart = e => {
 
-        let { dragHandle, dragFrom, disabled } = config;
+        let { dragHandle, dragFrom, disabled, autoScroll } = config;
         let target = e.target;
 
         draggedItem = target.closest('.tartib__item');
@@ -49,8 +49,8 @@ export const sort = (tartib) => {
         }
 
         dragPoint = getDragPoint(draggedItem, dragFrom, startPoint);
-
-        scrollableAncestors = getScrollableAncestors(list);
+        console.log(autoScroll);
+        scrollableAncestors = autoScroll ? getScrollableAncestors(list) : [];
 
         isDragging = true;
     }
