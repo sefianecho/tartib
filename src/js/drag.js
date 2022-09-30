@@ -1,7 +1,7 @@
-import { floor, HTML, INSERT_BEFORE, ROOT } from "./constants";
+import { ELEVATION_CLASSNAME, floor, HTML, INSERT_BEFORE, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME, ROOT } from "./constants";
 import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
-import { getBounds, getElement, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
+import { getBounds, getElement, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
 import { getDragPoint } from "./dragPoint";
 import { EventBinder } from "./core/events/binder";
 
@@ -36,14 +36,13 @@ export const sort = (tartib) => {
         let { dragHandle, dragFrom, disabled, autoScroll } = config;
         let target = e.target;
 
-        draggedItem = target.closest('.tartib__item');
+        draggedItem = target.closest(ITEM_SELECTOR);
 
         if (disabled || !draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
             return;
         }
 
         draggedItem.releasePointerCapture(e.pointerId);
-
         placeholder = draggedItem.cloneNode();
 
         startPoint = {
@@ -53,7 +52,6 @@ export const sort = (tartib) => {
 
         dragPoint = getDragPoint(dragHandle ? target : draggedItem, dragFrom, startPoint);
         scrollableAncestors = autoScroll ? getScrollableAncestors(list) : [];
-
         isDragging = true;
     }
 
@@ -68,32 +66,30 @@ export const sort = (tartib) => {
             let itemBounds;
 
             if (! startMoving) {
-                let { cursor, elevation, placeholder: placeholderClassname, opacity } = config;
 
-                itemBounds = getBounds(draggedItem);
                 setItemPosition(mouseX, mouseY);
 
-                draggedItem.classList.add('tartib__item--dragged');
-                draggedItem.style.width = itemBounds.width + 'px';
-                draggedItem.style.height = itemBounds.height + 'px';
+                let { cursor, elevation, placeholder: placeholderClassname, opacity } = config;
+                let { width, height } = getBounds(draggedItem);
 
-                if (cursor) {
-                    HTML.style.cursor = cursor;
-                }
+                height += 'px';
+                width += 'px';
 
+                inlineStyles(draggedItem, {
+                    width,
+                    height,
+                    opacity: opacity > 0 && opacity < 1 ? opacity : false,
+                });
+                inlineStyles(HTML, { cursor });
+                inlineStyles(placeholder, { height });
+
+                draggedItem.classList.add(ITEM_DRAGGED_CLASSNAME);
                 if (elevation) {
-                    draggedItem.classList.add('tartib--elevation');
+                    draggedItem.classList.add(ELEVATION_CLASSNAME);
                 }
-
-                if (opacity > 0 && opacity < 1) {
-                    draggedItem.style.opacity = opacity;
-                }
-
-                placeholder.classList.add(placeholderClassname || 'tartib__placeholder');
+                placeholder.classList.add(placeholderClassname || PLACEHOLDER_CLASSNAME);
 
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
-
-                placeholder.style.height = itemBounds.height + 'px';
                 startMoving = true;
             }
             // Move Item.
@@ -130,7 +126,7 @@ export const sort = (tartib) => {
              * Sort items.
              * 
              */
-            target = target.closest('.tartib__item');
+            target = target.closest(ITEM_SELECTOR);
 
             if (target && list.contains(target) && target !== placeholder) {
                 let targetBounds = getBounds(target);
@@ -171,13 +167,16 @@ export const sort = (tartib) => {
      */
     const dragEnd = e => {
         if (isDragging) {
-            draggedItem.style = '';
-            draggedItem.classList.remove('tartib__item--dragged', 'tartib--elevation');
             if (getParent(placeholder) === list) {
                 list.replaceChild(draggedItem, placeholder);
                 placeholder = null;
             }
-            HTML.style.cursor = '';
+
+            inlineStyles(draggedItem);
+            inlineStyles(HTML, { cursor: '' });
+
+            draggedItem.classList.remove(ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME);
+
             isDragging = startMoving = false;
         }
     }

@@ -1,4 +1,5 @@
 import { BODY, HTML, INSERT_AFTER, INSERT_BEFORE, ROOT } from "../constants";
+import { objectIterator } from "./object";
 import { isString } from "./util";
 
 /**
@@ -50,6 +51,23 @@ export const insertElement = (position, reference, element) => {
  */
 export const getParent = el => el.parentElement;
 
+/**
+ * Adds inline styles to an element.
+ *
+ * @param {Element} el - Any Element.
+ * @param {Object} styles - Inline styles.
+ */
+export const inlineStyles = (el, styles) => {
+
+    if (styles) {
+        objectIterator(styles, (value, property) => {
+            el.style[property] = value;
+        });
+    } else {
+        el.style = null;
+    }
+
+}
 
 /**
  * Gets scrollable ancestors elements.
