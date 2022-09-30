@@ -48,8 +48,7 @@ export const sort = (tartib) => {
             y: e.clientY
         }
 
-        dragPoint = getDragPoint(draggedItem, dragFrom, startPoint);
-        console.log(autoScroll);
+        dragPoint = getDragPoint(dragHandle ? target : draggedItem, dragFrom, startPoint);
         scrollableAncestors = autoScroll ? getScrollableAncestors(list) : [];
 
         isDragging = true;
