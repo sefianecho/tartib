@@ -3,10 +3,13 @@ import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
 import { getBounds, getElement, getParent, getScrollableAncestors, insertElement } from "./utils/dom";
 import { getDragPoint } from "./dragPoint";
+import { EventBinder } from "./core/events/binder";
 
 export const sort = (tartib) => {
 
     const { el: list, config } = tartib;
+
+    const listeners = EventBinder();
 
     let draggedItem;
 
@@ -196,7 +199,7 @@ export const sort = (tartib) => {
         }
     }
 
-    list.addEventListener('pointerdown', dragStart);
-    ROOT.addEventListener('pointermove', dragMove);
-    ROOT.addEventListener('pointerup', dragEnd);
+    listeners._add(list, 'pointerdown', dragStart);
+    listeners._add(ROOT, 'pointermove', dragMove);
+    listeners._add(ROOT, 'pointerup', dragEnd);
 }
