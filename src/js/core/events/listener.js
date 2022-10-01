@@ -1,4 +1,5 @@
-import { objectIterator } from "../../utils/object";
+import { CHANGE_EVENT, END_EVENT, SORT_EVENT, START_EVENT } from "../../constants";
+import { merge, objectIterator } from "../../utils/object";
 
 /**
  * Tartib events.
@@ -11,10 +12,10 @@ export const EventListener = () => {
      * Tartib event handlers.
      */
     const handlers = {
-        start: [],
-        sort: [],
-        change: [],
-        end: []
+        [START_EVENT]: [],
+        [SORT_EVENT]: [],
+        [CHANGE_EVENT]: [],
+        [END_EVENT]: []
     }
 
     return {
@@ -26,7 +27,7 @@ export const EventListener = () => {
          */
         _emit(type, ...args) {
             handlers[type].forEach(handler => {
-                handler(...args);
+                handler(merge({}, { type }, ...args));
             });
         },
 

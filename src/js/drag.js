@@ -1,13 +1,14 @@
-import { ELEVATION_CLASSNAME, floor, HTML, INSERT_BEFORE, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME, ROOT } from "./constants";
+import { CHANGE_EVENT, ELEVATION_CLASSNAME, END_EVENT, floor, HTML, INSERT_BEFORE, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME, ROOT, SORT_EVENT, START_EVENT } from "./constants";
 import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
 import { classList, getBounds, getElement, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
 import { getDragPoint } from "./dragPoint";
 import { EventBinder } from "./core/events/binder";
+import { toArray } from "./utils/array";
 
 export const sort = (tartib) => {
 
-    const { el: list, config } = tartib;
+    const { el: list, config, _e: { _emit } } = tartib;
 
     const listeners = EventBinder();
 
@@ -19,9 +20,15 @@ export const sort = (tartib) => {
 
     let itemClassList;
 
+    let itemBounds;
+
+    let startList;
+
     let startPoint = {}
 
     let dragPoint = {}
+
+    let eventObject;
 
     let startMoving = false;
 
@@ -46,12 +53,21 @@ export const sort = (tartib) => {
 
         draggedItem.releasePointerCapture(e.pointerId);
         placeholder = draggedItem.cloneNode();
+        startList = toArray(getElement(ITEM_SELECTOR, list, true));
 
         itemClassList = classList(draggedItem);
 
         startPoint = {
             x: e.clientX,
             y: e.clientY
+        }
+
+        eventObject = {
+            target: draggedItem,
+            relatedTarget: null,
+            placeholder,
+            el: list,
+            items: startList
         }
 
         dragPoint = getDragPoint(dragHandle ? target : draggedItem, dragFrom, startPoint);
@@ -67,14 +83,13 @@ export const sort = (tartib) => {
     const dragMove = e => {
         if (isDragging) {
             let { target, clientX: mouseX, clientY: mouseY } = e;
-            let itemBounds;
 
             if (! startMoving) {
 
                 setItemPosition(mouseX, mouseY);
 
                 let { cursor, elevation, placeholder: placeholderClassname, opacity, active } = config;
-                let { width, height } = getBounds(draggedItem);
+                let { width, height, x, y } = getBounds(draggedItem);
 
                 height += 'px';
                 width += 'px';
@@ -86,6 +101,8 @@ export const sort = (tartib) => {
                 });
                 inlineStyles(HTML, { cursor });
                 inlineStyles(placeholder, { height });
+
+                _emit(START_EVENT, eventObject, { x, y });
 
                 itemClassList._add([ITEM_DRAGGED_CLASSNAME, elevation && ELEVATION_CLASSNAME, active]);
 
@@ -156,7 +173,15 @@ export const sort = (tartib) => {
                     insertElement(position, target, placeholder);
                     startPoint.y = mouseY;
                     startPoint.x = mouseX;
+
+                    _emit(SORT_EVENT, eventObject, { 
+                        relatedTarget: target,
+                        x: itemBounds.x,
+                        y: itemBounds.y,
+                    });
                 }
+
+                
             }
         }
     }
@@ -168,15 +193,32 @@ export const sort = (tartib) => {
      */
     const dragEnd = e => {
         if (isDragging) {
+
             if (getParent(placeholder) === list) {
                 list.replaceChild(draggedItem, placeholder);
                 placeholder = null;
+            }
+
+            let endList = toArray(getElement(ITEM_SELECTOR, list, true));
+            let data = {
+                x: itemBounds.x,
+                y: itemBounds.y,
+                items: endList
             }
 
             inlineStyles(draggedItem);
             inlineStyles(HTML, { cursor: '' });
 
             itemClassList._remove([ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME, config.active]);
+
+            if (startList.some((item, index) => item !== endList[index])) {
+                _emit(CHANGE_EVENT, eventObject, data);
+            }
+
+            if (startMoving) {
+                _emit(END_EVENT, eventObject, data);
+            }
+
             isDragging = startMoving = false;
         }
     }
