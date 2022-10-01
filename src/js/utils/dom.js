@@ -1,4 +1,5 @@
 import { BODY, HTML, INSERT_AFTER, INSERT_BEFORE, ROOT } from "../constants";
+import { isArray } from "./array";
 import { objectIterator } from "./object";
 import { isString } from "./util";
 
@@ -68,6 +69,44 @@ export const inlineStyles = (el, styles) => {
     }
 
 }
+
+/**
+ * Updates element's classes.
+ *
+ * @param {Element} el - Any DOM Element.
+ * @param {String|Array} classes - Element classes.
+ * @param {Boolean} remove - Whether to remove classes.
+ */
+const updateList = (el, classes, remove) => {
+    if (isString(classes)) {
+        classes = classes.trim().split(/\s+/);
+    }
+
+    if (isArray(classes)) {
+        classes.forEach(cls => {
+            if (cls && isString(cls) && cls.trim()) {
+                el.classList[remove ? 'remove' : 'add'](cls);
+            }
+        });
+    }
+}
+
+/**
+ * Adds/Removes classes.
+ *
+ * @param {Element} el - Any DOM Element.
+ * @returns {Object}
+ */
+export const classList = el => ({
+    _add(cls) {
+        updateList(el, cls);
+    },
+
+    _remove(cls) {
+        updateList(el, cls, true);
+    }
+});
+
 
 /**
  * Gets scrollable ancestors elements.
