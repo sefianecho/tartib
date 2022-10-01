@@ -1,7 +1,7 @@
 import { ELEVATION_CLASSNAME, floor, HTML, INSERT_BEFORE, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME, ROOT } from "./constants";
 import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
-import { getBounds, getElement, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
+import { classList, getBounds, getElement, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
 import { getDragPoint } from "./dragPoint";
 import { EventBinder } from "./core/events/binder";
 
@@ -16,6 +16,8 @@ export const sort = (tartib) => {
     let placeholder;
 
     let scrollableAncestors;
+
+    let itemClassList;
 
     let startPoint = {}
 
@@ -45,6 +47,8 @@ export const sort = (tartib) => {
         draggedItem.releasePointerCapture(e.pointerId);
         placeholder = draggedItem.cloneNode();
 
+        itemClassList = classList(draggedItem);
+
         startPoint = {
             x: e.clientX,
             y: e.clientY
@@ -69,7 +73,7 @@ export const sort = (tartib) => {
 
                 setItemPosition(mouseX, mouseY);
 
-                let { cursor, elevation, placeholder: placeholderClassname, opacity } = config;
+                let { cursor, elevation, placeholder: placeholderClassname, opacity, active } = config;
                 let { width, height } = getBounds(draggedItem);
 
                 height += 'px';
@@ -83,12 +87,9 @@ export const sort = (tartib) => {
                 inlineStyles(HTML, { cursor });
                 inlineStyles(placeholder, { height });
 
-                draggedItem.classList.add(ITEM_DRAGGED_CLASSNAME);
-                if (elevation) {
-                    draggedItem.classList.add(ELEVATION_CLASSNAME);
-                }
-                placeholder.classList.add(placeholderClassname || PLACEHOLDER_CLASSNAME);
+                itemClassList._add([ITEM_DRAGGED_CLASSNAME, elevation && ELEVATION_CLASSNAME, active]);
 
+                classList(placeholder)._add(placeholderClassname || PLACEHOLDER_CLASSNAME);
                 insertElement(INSERT_BEFORE, draggedItem, placeholder);
                 startMoving = true;
             }
@@ -175,8 +176,7 @@ export const sort = (tartib) => {
             inlineStyles(draggedItem);
             inlineStyles(HTML, { cursor: '' });
 
-            draggedItem.classList.remove(ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME);
-
+            itemClassList._remove([ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME, config.active]);
             isDragging = startMoving = false;
         }
     }
