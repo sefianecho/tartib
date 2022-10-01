@@ -12,3 +12,12 @@ export const objectIterator = (object, fn) => {
         }
     }
 }
+
+/**
+ * Merges two or more objects together into the target object.
+ *
+ * @param {Object} target - Object that will receive the new properties.
+ * @param  {...Object} sources - Objects containing additional properties to merge in.
+ * @returns {Object}
+ */
+export const merge = (target, ...sources) => Object.assign(target, ...sources);
