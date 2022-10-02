@@ -1,6 +1,7 @@
-import { getBounds } from "./utils/dom";
-import { objectIterator } from "./utils/object";
-import { isString } from "./utils/util";
+import { getBounds } from "./dom";
+import { objectIterator } from "./object";
+import { isString } from "./util";
+
 
 /**
  * Gets drag from point.
