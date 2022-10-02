@@ -20,7 +20,7 @@ export const EventBinder = () => {
         /**
          * Registers and Adds an event listener.
          */
-        _add(target, type, handler) {
+        _bind(target, type, handler) {
             let listener = [target, type, handler];
             binder(listener);
             listeners.push(listener);
