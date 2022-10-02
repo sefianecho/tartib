@@ -1,4 +1,4 @@
-import { ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME } from "../utils/classes";
+import { ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, PLACEHOLDER_CLASSNAME } from "../utils/classes";
 import { getPlaceholderPosition } from "../placeholder/position";
 import { autoScroll } from "../scroll/autoScroll";
 import { classList, getBounds, getElement, getItem, getItems, getParent, inlineStyles } from "../utils/dom";
@@ -19,7 +19,10 @@ export const sortable = (tartib) => {
 
     const floor = Math.floor;
 
-    const eventBinder = EventBinder();
+    /**
+     * Event binder methods.
+     */
+    const { _bind, _clear } = EventBinder();
 
     /**
      * Dragged List Item.
@@ -115,7 +118,7 @@ export const sortable = (tartib) => {
             return;
         }
 
-        draggedItem.releasePointerCapture(e.pointerId);
+        target.releasePointerCapture(e.pointerId);
         placeholder = draggedItem.cloneNode();
         placeholder.id = '';
         startList = getItems(list);
@@ -144,7 +147,7 @@ export const sortable = (tartib) => {
     }
 
     /**
-     * Drags item.
+     * moves an item.
      *
      * @param {Event} e - Mousemove.
      */
@@ -188,6 +191,9 @@ export const sortable = (tartib) => {
                 y: itemBounds.y
             }
 
+            /**
+             * Fire move event.
+             */
             _emit(MOVE_EVENT, eventObject, data, { relatedTarget });
 
             /**
@@ -225,6 +231,9 @@ export const sortable = (tartib) => {
                     startPoint.y = mouseY;
                     startPoint.x = mouseX;
 
+                    /**
+                     * Fire sort event.
+                     */
                     _emit(SORT_EVENT, eventObject, data, { 
                         relatedTarget,
                         items: getItems(list),
@@ -235,7 +244,7 @@ export const sortable = (tartib) => {
     }
 
     /**
-     * Ends drag.
+     * Ends dragging.
      *
      * @param {Event} e - Mouseup.
      */
@@ -261,10 +270,16 @@ export const sortable = (tartib) => {
             itemClassList._remove([ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME, config.active]);
 
             if (startList.some((item, index) => item !== endList[index])) {
+                /**
+                 * Fire change event.
+                 */
                 _emit(CHANGE_EVENT, eventObject, data);
             }
 
             if (startMoving) {
+                /**
+                 * Fire end event.
+                 */
                 _emit(END_EVENT, eventObject, data);
             }
 
@@ -288,6 +303,8 @@ export const sortable = (tartib) => {
             draggedItem.style.left = x - dragPoint.x + 'px';
         }
     }
+
+
     /**
      * Gets an array, each value is an attribute value of a list item.
      *
@@ -297,12 +314,15 @@ export const sortable = (tartib) => {
      */
     const _getAttributeMap = (attribute, items) => items.map(item => item.getAttribute(attribute || 'id'));
 
-    eventBinder._bind(list, 'pointerdown', dragStart);
-    eventBinder._bind(ROOT, 'pointermove', dragMove);
-    eventBinder._bind(ROOT, 'pointerup', dragEnd);
+    /**
+     * Events.
+     */
+    _bind(list, 'pointerdown', dragStart);
+    _bind(ROOT, 'pointermove', dragMove);
+    _bind(ROOT, 'pointerup', dragEnd);
 
     return {
-        _clear: eventBinder._clear,
+        _clear,
         _getAttributeMap
     }
 }
