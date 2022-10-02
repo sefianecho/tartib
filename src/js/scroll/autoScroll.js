@@ -3,7 +3,6 @@ import { getBounds } from "../utils/dom";
 import { scroll } from "./scroll";
 
 export const autoScroll  = (scrollables, itemBounds) => {
-
     scrollables.forEach(scrollable => {
         let bounds = getBounds(scrollable);
 
@@ -22,9 +21,9 @@ export const autoScroll  = (scrollables, itemBounds) => {
         }
 
         // Auto Scroll Vertically.
-            scroll(scrollable, bounds, itemBounds, true);
+            scroll(scrollable, bounds, itemBounds, 'x');
         // Auto Scroll Horizontally.
-            scroll(scrollable, bounds, itemBounds, false);
+            scroll(scrollable, bounds, itemBounds, 'y');
     });
 }
 

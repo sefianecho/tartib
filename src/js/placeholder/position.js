@@ -1,4 +1,4 @@
-import { INSERT_AFTER, INSERT_BEFORE } from "../constants";
+import { INSERT_AFTER, INSERT_BEFORE, METHODS } from "../constants";
 
 /**
  * Gets placeholder's next position.
@@ -10,23 +10,14 @@ import { INSERT_AFTER, INSERT_BEFORE } from "../constants";
  * @param {String|undefined} placeholderPosition - Used for the diagonal positionning, the position of the placeholder in the other axis.
  * @returns {String}
  */
-export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, isVertical, placeholderPosition) => {
+export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, axis, placeholderPosition) => {
 
     let position;
-    let axis;
-    let dimension;
-
-    if (isVertical) {
-        axis = 'y';
-        dimension = 'height';
-    } else {
-        axis = 'x';
-        dimension = 'width';
-    }
+    let methods = METHODS[axis];
 
     // This indicates whether the mouse intersected the,
     // next element half (50% of its dimension) horizontally or vertically.
-    let nextElMouseIntersection = mousePosition > targetBounds[axis] + targetBounds[dimension] * 0.5;
+    let nextElMouseIntersection = mousePosition > targetBounds[axis] + targetBounds[methods._dimension] * 0.5;
     // Mouse movement, whether if its moving down or to the right.
     let movement = mouseStart[axis] < mousePosition;
 

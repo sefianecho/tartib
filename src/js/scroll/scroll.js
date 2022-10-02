@@ -1,3 +1,5 @@
+import { METHODS } from "../constants";
+
 /**
  * Scrolls ancestors that hides parts of the sortable list.
  *
@@ -6,41 +8,22 @@
  * @param {Object} itemBounds - Item's bounding rect.
  * @param {Boolean} isVertical - Indicates whether to scroll Vertically or horizontally.
  */
-export const scroll = (el, elBounds, itemBounds, isVertical) => {
+export const scroll = (el, elBounds, itemBounds, axis) => {
 
-    let scrollProperty = 'scroll';
-    // scrollHeight or scrollWidth.
-    let scrollDimension = scrollProperty;
-    // width or height.
-    let dimension;
-    // top or left.
-    let lowerBound;
-    // bottom or right.
-    let upperBound;
-    let scrollBound;
-
-    if (isVertical) {
-        scrollProperty += 'Top';
-		scrollDimension += 'Height';
-		dimension = 'height';
-		lowerBound = 'top';
-		upperBound = 'bottom';
-    } else {
-        scrollProperty += 'Left';
-		scrollDimension += 'Width';
-		dimension = 'width';
-		lowerBound = 'left';
-		upperBound = 'right';
-    }
+    let { _lowerBound, _upperBound, _scrollProperty, _scrollDimension, _dimension } = METHODS[axis];
+    let scrollTowards;
 
     // Scroll up or left.
-    if (itemBounds[lowerBound] < elBounds[lowerBound] && el[scrollProperty] > 0) {
-        scrollBound = lowerBound;
-    } else if (itemBounds[upperBound] > elBounds[upperBound] && (el[scrollProperty] < el[scrollDimension] - elBounds[dimension])) {
-        scrollBound = upperBound;
+    if (itemBounds[_lowerBound] < elBounds[_lowerBound] && el[_scrollProperty] > 0) {
+        scrollTowards = _lowerBound;
+    } else if (
+                itemBounds[_upperBound] > elBounds[_upperBound] &&
+                (el[_scrollProperty] < el[_scrollDimension] - elBounds[_dimension])
+            ) {
+        scrollTowards = _upperBound;
     }
 
-    if (scrollBound) {
-        el[scrollProperty] += itemBounds[scrollBound] - elBounds[scrollBound];
+    if (scrollTowards) {
+        el[_scrollProperty] += itemBounds[scrollTowards] - elBounds[scrollTowards];
     }
 }
