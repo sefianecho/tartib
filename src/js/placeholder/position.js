@@ -16,7 +16,7 @@ export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, 
     let methods = METHODS[axis];
 
     // This indicates whether the mouse intersected the,
-    // next element half (50% of its dimension) horizontally or vertically.
+    // next element half (50% of its dimension) width or height.
     let nextElMouseIntersection = mousePosition > targetBounds[axis] + targetBounds[methods._dimension] * 0.5;
     // Mouse movement, whether if its moving down or to the right.
     let movement = mouseStart[axis] < mousePosition;

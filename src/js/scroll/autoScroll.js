@@ -2,6 +2,13 @@ import { HTML } from "../constants";
 import { getBounds } from "../utils/dom";
 import { scroll } from "./scroll";
 
+/**
+ * Auto scrolls parent scrollables that hide part of the list, when dragging
+ * a list item.
+ *
+ * @param {Array} scrollables - Scrollable elements.
+ * @param {DOMRect} itemBounds - List item bounding rect.
+ */
 export const autoScroll  = (scrollables, itemBounds) => {
     scrollables.forEach(scrollable => {
         let bounds = getBounds(scrollable);
@@ -20,10 +27,9 @@ export const autoScroll  = (scrollables, itemBounds) => {
             }
         }
 
-        // Auto Scroll Vertically.
-            scroll(scrollable, bounds, itemBounds, 'x');
-        // Auto Scroll Horizontally.
-            scroll(scrollable, bounds, itemBounds, 'y');
+        // Scroll for each axis.
+        scroll(scrollable, bounds, itemBounds, 'x');
+        scroll(scrollable, bounds, itemBounds, 'y');
     });
 }
 

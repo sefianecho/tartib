@@ -9,8 +9,11 @@ import { getScrollableAncestors } from "../scroll/scrollable";
 import { insertPlaceholder } from "../placeholder/insert";
 import { CHANGE_EVENT, END_EVENT, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
 
-
-
+/**
+ * Sorts a list by dragging its items.
+ *
+ * @param {Tartib} tartib - Instance.
+ */
 export const sortable = (tartib) => {
 
     const { el: list, config, _e: { _emit } } = tartib;
@@ -19,26 +22,77 @@ export const sortable = (tartib) => {
 
     const eventBinder = EventBinder();
 
+    /**
+     * Dragged List Item.
+     *
+     * @type {Element}
+     */
     let draggedItem;
 
+    /**
+     * Placeholder Item.
+     *
+     * @type {Element}
+     */
     let placeholder;
 
+    /**
+     * List scrollable ancestors elements.
+     *
+     * @type {Array<Element>}
+     */
     let scrollableAncestors;
 
+    /**
+     * Dragged Item classList.
+     *
+     * @type {Object}
+     */
     let itemClassList;
 
+    /**
+     * Dragged Item Bounding rect.
+     *
+     * @type {DOMRect}
+     */
     let itemBounds;
 
+    /**
+     * Array of list items.
+     *
+     * @type {Array<Element>}
+     */
     let startList;
 
+    /**
+     * Start pointer coordinates.
+     *
+     * @type {Object} 
+     */
     let startPoint = {}
 
+    /**
+     * Drag at coordinates.
+     *
+     * @type {Object}
+     */
     let dragPoint = {}
 
+    /**
+     * Event Object Data.
+     *
+     * @type {Object}
+     */
     let eventObject;
 
+    /**
+     * Indicates whether a dragged item start moving.
+     */
     let startMoving = false;
 
+    /**
+     * Indicates whether an item is dragged.
+     */
     let isDragging = false;
 
 
@@ -54,6 +108,10 @@ export const sortable = (tartib) => {
 
         draggedItem = getItem(target);
 
+        /**
+         * Exit, if disabled or pointer down wasn't in a list item,
+         * or in a drag handle.
+         */
         if (disabled || !draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
             return;
         }

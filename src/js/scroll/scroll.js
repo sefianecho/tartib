@@ -10,12 +10,22 @@ import { METHODS } from "../constants";
  */
 export const scroll = (el, elBounds, itemBounds, axis) => {
 
+    /**
+     * All these variables are property names (methods), depending on the axis.
+     */
     let { _lowerBound, _upperBound, _scrollProperty, _scrollDimension, _dimension } = METHODS[axis];
+
+    /**
+     * Scroll direction (top | right | bottom | left).
+     * @type {String}
+     */
     let scrollTowards;
 
     // Scroll up or left.
     if (itemBounds[_lowerBound] < elBounds[_lowerBound] && el[_scrollProperty] > 0) {
         scrollTowards = _lowerBound;
+
+        // Scroll bottom or right.
     } else if (
                 itemBounds[_upperBound] > elBounds[_upperBound] &&
                 (el[_scrollProperty] < el[_scrollDimension] - elBounds[_dimension])
