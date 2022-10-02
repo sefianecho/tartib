@@ -1,4 +1,4 @@
-import { BODY, HTML, INSERT_AFTER, INSERT_BEFORE, ROOT } from "../constants";
+import { BODY, HTML, INSERT_AFTER, INSERT_BEFORE, ITEM_SELECTOR, ROOT } from "../constants";
 import { isArray } from "./array";
 import { objectIterator } from "./object";
 import { isString } from "./util";
@@ -143,3 +143,11 @@ export const getScrollableAncestors = (el) => {
 
     return scrollableAncestors;
 }
+
+/**
+ * Gets List item.
+ *
+ * @param {Element} target - Event Target.
+ * @returns {Element|null}
+ */
+export const getItem = (target) => target.closest(ITEM_SELECTOR);

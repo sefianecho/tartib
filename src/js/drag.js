@@ -1,7 +1,7 @@
 import { CHANGE_EVENT, ELEVATION_CLASSNAME, END_EVENT, floor, HTML, INSERT_BEFORE, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME, ROOT, SORT_EVENT, START_EVENT } from "./constants";
 import { getPlaceholderPosition } from "./position";
 import { autoScroll } from "./autoScroll";
-import { classList, getBounds, getElement, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
+import { classList, getBounds, getElement, getItem, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
 import { getDragPoint } from "./dragPoint";
 import { EventBinder } from "./core/events/binder";
 import { toArray } from "./utils/array";
@@ -45,7 +45,7 @@ export const sort = (tartib) => {
         let { dragHandle, dragFrom, disabled, autoScroll } = config;
         let target = e.target;
 
-        draggedItem = target.closest(ITEM_SELECTOR);
+        draggedItem = getItem(target);
 
         if (disabled || !draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
             return;
@@ -144,7 +144,7 @@ export const sort = (tartib) => {
              * Sort items.
              * 
              */
-            target = target.closest(ITEM_SELECTOR);
+            target = getItem(target);
 
             if (target && list.contains(target) && target !== placeholder) {
                 let targetBounds = getBounds(target);
@@ -201,6 +201,7 @@ export const sort = (tartib) => {
 
             let endList = toArray(getElement(ITEM_SELECTOR, list, true));
             let data = {
+                placeholder,
                 x: itemBounds.x,
                 y: itemBounds.y,
                 items: endList
