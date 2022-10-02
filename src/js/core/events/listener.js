@@ -1,4 +1,4 @@
-import { CHANGE_EVENT, END_EVENT, SORT_EVENT, START_EVENT } from "../../constants";
+import { CHANGE_EVENT, END_EVENT, MOVE_EVENT, SORT_EVENT, START_EVENT } from "../../constants";
 import { merge, objectIterator } from "../../utils/object";
 
 /**
@@ -13,6 +13,7 @@ export const EventListener = () => {
      */
     const handlers = {
         [START_EVENT]: [],
+        [MOVE_EVENT]: [],
         [SORT_EVENT]: [],
         [CHANGE_EVENT]: [],
         [END_EVENT]: []

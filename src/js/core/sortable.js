@@ -7,11 +7,15 @@ import { EventBinder } from "./events/binder";
 import { toArray } from "../utils/array";
 import { getScrollableAncestors } from "../scroll/scrollable";
 import { insertPlaceholder } from "../placeholder/insert";
-import { CHANGE_EVENT, END_EVENT, floor, HTML, INSERT_BEFORE, ROOT, SORT_EVENT, START_EVENT } from "../constants";
+import { CHANGE_EVENT, END_EVENT, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
+
+
 
 export const sortable = (tartib) => {
 
     const { el: list, config, _e: { _emit } } = tartib;
+
+    const floor = Math.floor;
 
     const eventBinder = EventBinder();
 
@@ -85,7 +89,8 @@ export const sortable = (tartib) => {
      */
     const dragMove = e => {
         if (isDragging) {
-            let { target, clientX: mouseX, clientY: mouseY } = e;
+            let { target: relatedTarget, clientX: mouseX, clientY: mouseY } = e;
+            let data;
 
             if (! startMoving) {
 
@@ -117,19 +122,22 @@ export const sortable = (tartib) => {
             itemBounds = getBounds(draggedItem);
             setItemPosition(mouseX, mouseY, config.axis);
 
+            data = {
+                x: itemBounds.x,
+                y: itemBounds.y
+            }
+
+            _emit(MOVE_EVENT, eventObject, data, { relatedTarget });
+
             /**
              * Scroll to view where to drop.
              */
             autoScroll(scrollableAncestors, itemBounds);
 
-            /**
-             * Sort items.
-             * 
-             */
-            target = getItem(target);
+            relatedTarget = getItem(relatedTarget);
 
-            if (target && list.contains(target) && target !== placeholder) {
-                let targetBounds = getBounds(target);
+            if (list.contains(relatedTarget) && relatedTarget !== placeholder) {
+                let bounds = getBounds(relatedTarget);
                 let { top, right, bottom, left } = getBounds(placeholder);
                 let movingVertically = mouseX <= floor(right) && mouseX >= floor(left);
                 let movingHorizontally = mouseY <= floor(bottom) && mouseY >= floor(top);
@@ -138,29 +146,25 @@ export const sortable = (tartib) => {
                 // Sorting item diagonally.
                 if (! movingHorizontally && ! movingVertically) {
                     // Get position horizontally, pass it to the vertical position.
-                    position = getPlaceholderPosition(targetBounds, startPoint, mouseY, true, getPlaceholderPosition(targetBounds, startPoint, mouseX));
+                    position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', getPlaceholderPosition(bounds, startPoint, mouseX, 'x'));
                 } else {
                     // Sorting item vertically.
                     if (! movingHorizontally) {
-                        position = getPlaceholderPosition(targetBounds, startPoint, mouseY, true);
+                        position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y');
                     }
 
                     // Sorting item horizontally.
                     if (! movingVertically) {
-                        position = getPlaceholderPosition(targetBounds, startPoint, mouseX);
+                        position = getPlaceholderPosition(bounds, startPoint, mouseX, 'x');
                     }
                 }
 
                 if (position) {
-                    insertPlaceholder(position, target, placeholder);
+                    insertPlaceholder(position, relatedTarget, placeholder);
                     startPoint.y = mouseY;
                     startPoint.x = mouseX;
 
-                    _emit(SORT_EVENT, eventObject, { 
-                        relatedTarget: target,
-                        x: itemBounds.x,
-                        y: itemBounds.y,
-                    });
+                    _emit(SORT_EVENT, eventObject, data, { relatedTarget });
                 }
             }
         }
