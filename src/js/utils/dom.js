@@ -1,6 +1,5 @@
-import { ITEM_SELECTOR } from "./classes";
+import { ITEM_SELECTOR, PLACEHOLDER_CLASSNAME } from "./classes";
 import { ROOT } from "../constants";
-import { isArray } from "./array";
 import { objectIterator } from "./object";
 import { isString } from "./util";
 
@@ -62,7 +61,7 @@ const updateList = (el, classes, remove) => {
         classes = classes.trim().split(/\s+/);
     }
 
-    if (isArray(classes)) {
+    if (Array.isArray(classes)) {
         classes.forEach(cls => {
             if (cls && isString(cls) && cls.trim()) {
                 el.classList[remove ? 'remove' : 'add'](cls);
@@ -94,3 +93,25 @@ export const classList = el => ({
  * @returns {Element|null}
  */
 export const getItem = (target) => target.closest(ITEM_SELECTOR);
+
+/**
+ * Gets sortable list items.
+ *
+ * @param {Element} list - Sortabale list.
+ * @returns {Array<Element>}
+ */
+export const getItems = list => {
+
+    let nodeList = getElement(ITEM_SELECTOR, list, true);
+    let items = [];
+    let length = nodeList.length;
+
+    for (let i = 0; i < length; i++) {
+        const element = nodeList[i];
+        // Exclude placeholder item.
+        if (! element.classList.contains(PLACEHOLDER_CLASSNAME)) {
+            items.push(element);
+        }
+    }
+    return items;
+}

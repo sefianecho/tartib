@@ -1,10 +1,9 @@
 import { ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME } from "../utils/classes";
 import { getPlaceholderPosition } from "../placeholder/position";
 import { autoScroll } from "../scroll/autoScroll";
-import { classList, getBounds, getElement, getItem, getParent, inlineStyles } from "../utils/dom";
+import { classList, getBounds, getElement, getItem, getItems, getParent, inlineStyles } from "../utils/dom";
 import { getDragPoint } from "../utils/dragPoint";
 import { EventBinder } from "./events/binder";
-import { toArray } from "../utils/array";
 import { getScrollableAncestors } from "../scroll/scrollable";
 import { insertPlaceholder } from "../placeholder/insert";
 import { CHANGE_EVENT, END_EVENT, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
@@ -118,7 +117,8 @@ export const sortable = (tartib) => {
 
         draggedItem.releasePointerCapture(e.pointerId);
         placeholder = draggedItem.cloneNode();
-        startList = toArray(getElement(ITEM_SELECTOR, list, true));
+        placeholder.id = '';
+        startList = getItems(list);
 
         itemClassList = classList(draggedItem);
 
@@ -132,7 +132,10 @@ export const sortable = (tartib) => {
             relatedTarget: null,
             placeholder,
             el: list,
-            items: startList
+            items: startList,
+            getData(attribute) {
+                return _getAttributeMap(attribute, this.items);
+            }
         }
 
         dragPoint = getDragPoint(dragHandle ? target : draggedItem, dragFrom, startPoint);
@@ -222,7 +225,10 @@ export const sortable = (tartib) => {
                     startPoint.y = mouseY;
                     startPoint.x = mouseX;
 
-                    _emit(SORT_EVENT, eventObject, data, { relatedTarget });
+                    _emit(SORT_EVENT, eventObject, data, { 
+                        relatedTarget,
+                        items: getItems(list),
+                    });
                 }
             }
         }
@@ -241,7 +247,7 @@ export const sortable = (tartib) => {
                 placeholder = null;
             }
 
-            let endList = toArray(getElement(ITEM_SELECTOR, list, true));
+            let endList = getItems(list);
             let data = {
                 placeholder,
                 x: itemBounds.x,
@@ -282,8 +288,21 @@ export const sortable = (tartib) => {
             draggedItem.style.left = x - dragPoint.x + 'px';
         }
     }
+    /**
+     * Gets an array, each value is an attribute value of a list item.
+     *
+     * @param {String} attribute - Element attribute name.
+     * @param {Array<Element>} items - Sortable list items.
+     * @returns {Array}
+     */
+    const _getAttributeMap = (attribute, items) => items.map(item => item.getAttribute(attribute || 'id'));
 
     eventBinder._bind(list, 'pointerdown', dragStart);
     eventBinder._bind(ROOT, 'pointermove', dragMove);
     eventBinder._bind(ROOT, 'pointerup', dragEnd);
+
+    return {
+        _destroy: eventBinder._destroy,
+        _getAttributeMap
+    }
 }
