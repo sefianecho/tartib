@@ -1,16 +1,19 @@
-import { CHANGE_EVENT, ELEVATION_CLASSNAME, END_EVENT, floor, HTML, INSERT_BEFORE, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME, ROOT, SORT_EVENT, START_EVENT } from "./constants";
-import { getPlaceholderPosition } from "./position";
-import { autoScroll } from "./autoScroll";
-import { classList, getBounds, getElement, getItem, getParent, getScrollableAncestors, inlineStyles, insertElement } from "./utils/dom";
-import { getDragPoint } from "./dragPoint";
-import { EventBinder } from "./core/events/binder";
-import { toArray } from "./utils/array";
+import { ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, ITEM_SELECTOR, PLACEHOLDER_CLASSNAME } from "../utils/classes";
+import { getPlaceholderPosition } from "../placeholder/position";
+import { autoScroll } from "../scroll/autoScroll";
+import { classList, getBounds, getElement, getItem, getParent, inlineStyles } from "../utils/dom";
+import { getDragPoint } from "../utils/dragPoint";
+import { EventBinder } from "./events/binder";
+import { toArray } from "../utils/array";
+import { getScrollableAncestors } from "../scroll/scrollable";
+import { insertPlaceholder } from "../placeholder/insert";
+import { CHANGE_EVENT, END_EVENT, floor, HTML, INSERT_BEFORE, ROOT, SORT_EVENT, START_EVENT } from "../constants";
 
-export const sort = (tartib) => {
+export const sortable = (tartib) => {
 
     const { el: list, config, _e: { _emit } } = tartib;
 
-    const listeners = EventBinder();
+    const eventBinder = EventBinder();
 
     let draggedItem;
 
@@ -107,7 +110,7 @@ export const sort = (tartib) => {
                 itemClassList._add([ITEM_DRAGGED_CLASSNAME, elevation && ELEVATION_CLASSNAME, active]);
 
                 classList(placeholder)._add(placeholderClassname || PLACEHOLDER_CLASSNAME);
-                insertElement(INSERT_BEFORE, draggedItem, placeholder);
+                insertPlaceholder(INSERT_BEFORE, draggedItem, placeholder);
                 startMoving = true;
             }
             // Move Item.
@@ -117,28 +120,7 @@ export const sort = (tartib) => {
             /**
              * Scroll to view where to drop.
              */
-            scrollableAncestors.forEach(scrollable => {
-                let bounds = getBounds(scrollable);
-
-                if (scrollable === HTML) {
-                    let domHeight = HTML.clientHeight;
-                    let width = bounds.width;
-
-                    bounds = {
-                        top: 0,
-                        left: 0,
-                        right: width,
-                        bottom: domHeight,
-                        height: domHeight,
-                        width
-                    }
-                }
-
-                // Auto Scroll Vertically.
-                    autoScroll(scrollable, bounds, itemBounds, true);
-                // Auto Scroll Horizontally.
-                    autoScroll(scrollable, bounds, itemBounds, false);
-            });
+            autoScroll(scrollableAncestors, itemBounds);
 
             /**
              * Sort items.
@@ -170,7 +152,7 @@ export const sort = (tartib) => {
                 }
 
                 if (position) {
-                    insertElement(position, target, placeholder);
+                    insertPlaceholder(position, target, placeholder);
                     startPoint.y = mouseY;
                     startPoint.x = mouseX;
 
@@ -180,8 +162,6 @@ export const sort = (tartib) => {
                         y: itemBounds.y,
                     });
                 }
-
-                
             }
         }
     }
@@ -241,7 +221,7 @@ export const sort = (tartib) => {
         }
     }
 
-    listeners._add(list, 'pointerdown', dragStart);
-    listeners._add(ROOT, 'pointermove', dragMove);
-    listeners._add(ROOT, 'pointerup', dragEnd);
+    eventBinder._bind(list, 'pointerdown', dragStart);
+    eventBinder._bind(ROOT, 'pointermove', dragMove);
+    eventBinder._bind(ROOT, 'pointerup', dragEnd);
 }
