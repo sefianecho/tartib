@@ -1,4 +1,4 @@
-import { INSERT_AFTER, INSERT_BEFORE } from "./constants";
+import { INSERT_AFTER, INSERT_BEFORE } from "../constants";
 
 /**
  * Gets placeholder's next position.
