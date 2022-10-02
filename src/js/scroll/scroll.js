@@ -6,7 +6,7 @@
  * @param {Object} itemBounds - Item's bounding rect.
  * @param {Boolean} isVertical - Indicates whether to scroll Vertically or horizontally.
  */
-export const autoScroll = (el, elBounds, itemBounds, isVertical) => {
+export const scroll = (el, elBounds, itemBounds, isVertical) => {
 
     let scrollProperty = 'scroll';
     // scrollHeight or scrollWidth.
