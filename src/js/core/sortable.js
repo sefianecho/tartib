@@ -302,7 +302,7 @@ export const sortable = (tartib) => {
     eventBinder._bind(ROOT, 'pointerup', dragEnd);
 
     return {
-        _destroy: eventBinder._destroy,
+        _clear: eventBinder._clear,
         _getAttributeMap
     }
 }

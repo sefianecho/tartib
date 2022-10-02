@@ -27,9 +27,9 @@ export const EventBinder = () => {
         },
 
         /**
-         * Detach all events listeners.
+         * Removes all events listeners.
          */
-        _destroy() {
+        _clear() {
             listeners.forEach(listener => {
                 binder(listener, true);
             });
