@@ -1,4 +1,3 @@
-import { ITEM_SELECTOR, PLACEHOLDER_CLASSNAME } from "./classes";
 import { ROOT } from "../constants";
 import { objectIterator } from "./object";
 import { isString } from "./util";
@@ -85,33 +84,3 @@ export const classList = el => ({
         updateList(el, cls, true);
     }
 });
-
-/**
- * Gets List item.
- *
- * @param {Element} target - Event Target.
- * @returns {Element|null}
- */
-export const getItem = (target) => target.closest(ITEM_SELECTOR);
-
-/**
- * Gets sortable list items.
- *
- * @param {Element} list - Sortabale list.
- * @returns {Array<Element>}
- */
-export const getItems = list => {
-
-    let nodeList = getElement(ITEM_SELECTOR, list, true);
-    let items = [];
-    let length = nodeList.length;
-
-    for (let i = 0; i < length; i++) {
-        const element = nodeList[i];
-        // Exclude placeholder item.
-        if (! element.classList.contains(PLACEHOLDER_CLASSNAME)) {
-            items.push(element);
-        }
-    }
-    return items;
-}

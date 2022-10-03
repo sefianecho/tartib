@@ -1,12 +1,13 @@
 import { ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, PLACEHOLDER_CLASSNAME } from "../utils/classes";
 import { getPlaceholderPosition } from "../placeholder/position";
 import { autoScroll } from "../scroll/autoScroll";
-import { classList, getBounds, getElement, getItem, getItems, getParent, inlineStyles } from "../utils/dom";
+import { classList, getBounds, getElement, getParent, inlineStyles } from "../utils/dom";
 import { getDragPoint } from "../utils/dragPoint";
 import { EventBinder } from "./events/binder";
 import { getScrollableAncestors } from "../scroll/scrollable";
 import { insertPlaceholder } from "../placeholder/insert";
 import { CHANGE_EVENT, END_EVENT, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
+import { List } from "./list";
 
 /**
  * Sorts a list by dragging its items.
@@ -15,9 +16,13 @@ import { CHANGE_EVENT, END_EVENT, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EV
  */
 export const sortable = (tartib) => {
 
-    const { el: list, config, _e: { _emit } } = tartib;
-
     const floor = Math.floor;
+    const { el, config, _e: { _emit } } = tartib;
+
+    /**
+     * List.
+     */
+    const { _getItem, _getItems } = List(el);
 
     /**
      * Event binder methods.
@@ -106,9 +111,9 @@ export const sortable = (tartib) => {
     const dragStart = e => {
 
         let { dragHandle, dragFrom, disabled, autoScroll } = config;
-        let target = e.target;
+        let { target, pointerId, clientX, clientY } = e;
 
-        draggedItem = getItem(target);
+        draggedItem = _getItem(target);
 
         /**
          * Exit, if disabled or pointer down wasn't in a list item,
@@ -118,23 +123,25 @@ export const sortable = (tartib) => {
             return;
         }
 
-        target.releasePointerCapture(e.pointerId);
+        target.releasePointerCapture(pointerId);
         placeholder = draggedItem.cloneNode();
         placeholder.id = '';
-        startList = getItems(list);
+        startList = _getItems();
 
         itemClassList = classList(draggedItem);
 
         startPoint = {
-            x: e.clientX,
-            y: e.clientY
+            x: clientX,
+            y: clientY
         }
 
         eventObject = {
+            el,
+            x: 0,
+            y: 0,
             target: draggedItem,
             relatedTarget: null,
             placeholder,
-            el: list,
             items: startList,
             getData(attribute) {
                 return _getAttributeMap(attribute, this.items);
@@ -142,7 +149,7 @@ export const sortable = (tartib) => {
         }
 
         dragPoint = getDragPoint(dragHandle ? target : draggedItem, dragFrom, startPoint);
-        scrollableAncestors = autoScroll ? getScrollableAncestors(list) : [];
+        scrollableAncestors = autoScroll ? getScrollableAncestors(el) : [];
         isDragging = true;
     }
 
@@ -201,9 +208,9 @@ export const sortable = (tartib) => {
              */
             autoScroll(scrollableAncestors, itemBounds);
 
-            relatedTarget = getItem(relatedTarget);
+            relatedTarget = _getItem(relatedTarget);
 
-            if (list.contains(relatedTarget) && relatedTarget !== placeholder) {
+            if (el.contains(relatedTarget) && relatedTarget !== placeholder) {
                 let bounds = getBounds(relatedTarget);
                 let { top, right, bottom, left } = getBounds(placeholder);
                 let movingVertically = mouseX <= floor(right) && mouseX >= floor(left);
@@ -236,7 +243,7 @@ export const sortable = (tartib) => {
                      */
                     _emit(SORT_EVENT, eventObject, data, { 
                         relatedTarget,
-                        items: getItems(list),
+                        items: _getItems(),
                     });
                 }
             }
@@ -251,16 +258,14 @@ export const sortable = (tartib) => {
     const dragEnd = e => {
         if (isDragging) {
 
-            if (getParent(placeholder) === list) {
-                list.replaceChild(draggedItem, placeholder);
+            if (getParent(placeholder) === el) {
+                el.replaceChild(draggedItem, placeholder);
                 placeholder = null;
             }
 
-            let endList = getItems(list);
+            let endList = _getItems();
             let data = {
                 placeholder,
-                x: itemBounds.x,
-                y: itemBounds.y,
                 items: endList
             }
 
@@ -317,12 +322,13 @@ export const sortable = (tartib) => {
     /**
      * Events.
      */
-    _bind(list, 'pointerdown', dragStart);
+    _bind(el, 'pointerdown', dragStart);
     _bind(ROOT, 'pointermove', dragMove);
     _bind(ROOT, 'pointerup', dragEnd);
 
     return {
         _clear,
-        _getAttributeMap
+        _getAttributeMap,
+        _getItems
     }
 }
