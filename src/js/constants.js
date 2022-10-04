@@ -11,6 +11,8 @@ export const SORT_EVENT = 'sort';
 export const CHANGE_EVENT = 'change';
 export const END_EVENT = 'end';
 
+export const { floor, abs } = Math;
+
 
 export const METHODS = {
     x: {

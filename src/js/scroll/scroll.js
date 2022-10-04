@@ -1,4 +1,4 @@
-import { METHODS } from "../constants";
+import { abs, METHODS } from "../constants";
 
 /**
  * Scrolls ancestors that hides parts of the sortable list.
@@ -7,8 +7,9 @@ import { METHODS } from "../constants";
  * @param {Object} elBounds - Scrollable element bounding rect.
  * @param {Object} itemBounds - Item's bounding rect.
  * @param {Boolean} isVertical - Indicates whether to scroll Vertically or horizontally.
+ * @param {Boolean} isRTL - Indicates whether the list is in RTL direction.
  */
-export const scroll = (el, elBounds, itemBounds, axis) => {
+export const scroll = (el, elBounds, itemBounds, axis, isRTL) => {
 
     /**
      * All these variables are property names (methods), depending on the axis.
@@ -20,16 +21,15 @@ export const scroll = (el, elBounds, itemBounds, axis) => {
      * @type {String}
      */
     let scrollTowards;
+    let scrollAmount = abs(el[_scrollProperty]);
+    let isScrolled = scrollAmount > 0;
+    let isFullScrolled = scrollAmount < el[_scrollDimension] - elBounds[_dimension];
 
     // Scroll up or left.
-    if (itemBounds[_lowerBound] < elBounds[_lowerBound] && el[_scrollProperty] > 0) {
+    if (( isRTL ? isFullScrolled : isScrolled) && itemBounds[_lowerBound] < elBounds[_lowerBound]) {
         scrollTowards = _lowerBound;
-
         // Scroll bottom or right.
-    } else if (
-                itemBounds[_upperBound] > elBounds[_upperBound] &&
-                (el[_scrollProperty] < el[_scrollDimension] - elBounds[_dimension])
-            ) {
+    } else if ((isRTL ? isScrolled : isFullScrolled) && itemBounds[_upperBound] > elBounds[_upperBound]) {
         scrollTowards = _upperBound;
     }
 

@@ -8,8 +8,9 @@ import { scroll } from "./scroll";
  *
  * @param {Array} scrollables - Scrollable elements.
  * @param {DOMRect} itemBounds - List item bounding rect.
+ * @param {Boolean} isRTL - Indicates if the list is in RTL direction.
  */
-export const autoScroll  = (scrollables, itemBounds) => {
+export const autoScroll  = (scrollables, itemBounds, isRTL) => {
     scrollables.forEach(scrollable => {
         let bounds = getBounds(scrollable);
 
@@ -28,8 +29,8 @@ export const autoScroll  = (scrollables, itemBounds) => {
         }
 
         // Scroll for each axis.
-        scroll(scrollable, bounds, itemBounds, 'x');
-        scroll(scrollable, bounds, itemBounds, 'y');
+        scroll(scrollable, bounds, itemBounds, 'x', isRTL);
+        scroll(scrollable, bounds, itemBounds, 'y', false);
     });
 }
 

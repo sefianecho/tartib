@@ -6,7 +6,7 @@ import { getDragPoint } from "../utils/dragPoint";
 import { EventBinder } from "./events/binder";
 import { getScrollableAncestors } from "../scroll/scrollable";
 import { insertPlaceholder } from "../placeholder/insert";
-import { CHANGE_EVENT, END_EVENT, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
+import { CHANGE_EVENT, END_EVENT, floor, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
 import { List } from "./list";
 
 /**
@@ -16,7 +16,6 @@ import { List } from "./list";
  */
 export const sortable = (tartib) => {
 
-    const floor = Math.floor;
     const { el, config, _e: { _emit } } = tartib;
 
     /**
@@ -212,7 +211,7 @@ export const sortable = (tartib) => {
             /**
              * Scroll to view where to drop.
              */
-            autoScroll(scrollableAncestors, itemBounds);
+            autoScroll(scrollableAncestors, itemBounds, isRTL);
 
             relatedTarget = _getItem(relatedTarget);
 
@@ -226,11 +225,11 @@ export const sortable = (tartib) => {
                 // Sorting item diagonally.
                 if (! movingHorizontally && ! movingVertically) {
                     // Get position horizontally, pass it to the vertical position.
-                    position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', isRTL, getPlaceholderPosition(bounds, startPoint, mouseX, 'x', isRTL));
+                    position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', false, getPlaceholderPosition(bounds, startPoint, mouseX, 'x', isRTL));
                 } else {
                     // Sorting item vertically.
                     if (! movingHorizontally) {
-                        position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', isRTL);
+                        position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', false);
                     }
 
                     // Sorting item horizontally.

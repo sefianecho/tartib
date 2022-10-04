@@ -12,8 +12,6 @@ import { INSERT_AFTER, INSERT_BEFORE, METHODS } from "../constants";
  */
 export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, axis, isRTL, placeholderPosition) => {
 
-    isRTL = axis === 'x' && isRTL;
-
     let position;
     let methods = METHODS[axis];
 
