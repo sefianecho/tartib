@@ -352,6 +352,9 @@ export const sortable = (tartib) => {
     _bind(el, 'pointerdown', dragStart);
     _bind(ROOT, 'pointermove', dragMove);
     _bind(ROOT, 'pointerup', dragEnd);
+    _bind(ROOT, 'pointercancel', e => {
+        isDragging = startMoving = false;
+    });
 
     return {
         _clear,
