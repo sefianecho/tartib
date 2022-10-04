@@ -75,7 +75,7 @@ const tartib = new Tartib('#my-list', {
 | elevation | `Boolean` | `true` | Adds a box shadow to the dragged item. |
 | active | `String` | `''` | Add classes (space separated) to the dragged item, those classes will be removed when the item is dropped |
 | placeholder | `String` | `''` | Add classes to the placeholder (The empty slot). |
-| dragHandle | `String|Element` | `''` | A selector or an Element, use it as a drag area within the item. |
+| dragHandle | `String\|Element` | `''` | A selector or an Element, use it as a drag area within the item. |
 | axis | `String` | `''` | Lock movement to only one axis `'x'` or `'y'` |
 | disabled | `Boolean` | `false` | Disable/Enable sorting |
 | opacity | `Number` | `1` | Apply opacity to the dragged item (during dragging), value must be between 0 and 1 exclusive |
@@ -86,8 +86,26 @@ const tartib = new Tartib('#my-list', {
 
 | **Event**  | **Argument** | **Description**               |
 |------- | --------------- | ------------------------------ |
-| `start` | `event` | Fires when an item start moving (dragging) |
-| `move` | `event` | Fires when an item is moving (being dragged) |
-| `sort` | `event` | Similar to the `move` event, it only fires when the item change its position |
-| `change` | `event` | Fires when an item is dropped and the list item's order is changed |
-| `end` | `event` | Fires when an item is dropped |
+| `start` | `event` | is fired when the item starts to move. |
+| `move` | `event` | is fired when the item is moving |
+| `sort` | `event` | is fired when the item changes its position. |
+| `change` | `event` | is fired when the list items order changes. |
+| `end` | `event` | is fired when the item is dropped. |
+
+### Event Handler parameter
+- x: `number` — Item x coordinate.
+- y: `number` — Item y coordinate.
+- target: `Element` — The Dragged Item.
+- relatedTarget: `Element` — When hover over or touch other list item while dragging an item.
+- placeholder: `Element` — Item slot.
+- items: `Array` — List items.
+- getData(attribute : `String`) : `Array` — Array of each item attribute value.
+
+## Methods
+- **setOptions**(options: `Object`) — Sets one or more options.
+- **on**(type: `String`, handler: `callback`) — Adds an event listener.
+- **off**(type`?`: `String`, handler`?`: `callback`) — Removes an event handler, if the handler argument is omitted then all handlers attach to this event will be removed, calling this method without arguments will remove all handlers of all events.
+- **getData**(attribute: `String`) : `Array` — Array of each item attribute value.
+- **disable**() — Disables sorting.
+- **enable**() — Enables sorting.
+- **destroy**() — Removes this instance functionality (free up memory).
