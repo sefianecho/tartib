@@ -18,4 +18,6 @@ export const defaults = {
     opacity: false,
 
     autoScroll: true,
+
+    rtl: false,
 }

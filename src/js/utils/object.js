@@ -21,3 +21,12 @@ export const objectIterator = (object, fn) => {
  * @returns {Object}
  */
 export const merge = (target, ...sources) => Object.assign(target, ...sources);
+
+
+/**
+ * Checks if a value is an object.
+ *
+ * @param {any} value - Value to check if it's an object.
+ * @returns {Boolean}
+ */
+export const isObject = value => typeof value === 'object' && value != null && ! Array.isArray(value);

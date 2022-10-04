@@ -1,5 +1,6 @@
+import { METHODS } from "../constants";
 import { getBounds } from "./dom";
-import { objectIterator } from "./object";
+import { isObject, objectIterator } from "./object";
 import { isString } from "./util";
 
 
@@ -8,29 +9,43 @@ import { isString } from "./util";
  *
  * @param {Element} item    - Dragged item.
  * @param {Ojbect} dragFrom - Pointer position relative to the dragged item.
- * @param {Object} mouse    - Mouse position.
+ * @param {Object} pointer    - Pointer position.
  * @returns {Object}
  */
-export const getDragPoint = (item, dragFrom, mouse) => {
+export const getDragPoint = (item, dragFrom, pointer, handle, isRTL) => {
+    dragFrom = isObject(dragFrom) ? dragFrom : {};
 
-    dragFrom = dragFrom || { x: '', y: '' };
+    let bounds = getBounds(handle || item);
+    let itemBounds = handle ? getBounds(item) : bounds;
+    let point = {};
+    let dragVal;
 
-    let bounds = getBounds(item);
-    let percentage;
-    let point = {}
+    objectIterator(pointer, (val, axis) => {
+        dragVal = dragFrom[axis];
 
-    objectIterator(dragFrom, (val, key) => {
-
-        if (val === '' || isNaN(val)) {
-            percentage = isString(val) && val.trim().match(/^(\d*.?\d+)\s*%$/);
-            if (percentage) {
-                val = percentage[1] * (key === 'x' ? bounds.width : bounds.height) / 100;
+        if (dragVal === '' || isNaN(dragVal)) {
+            if (isString(dragVal) && /^\d*.?\d+\s*%$/.test(dragVal.trim())) {
+                dragVal = parseFloat(dragVal) * bounds[METHODS[axis]._dimension] / 100;
             } else {
-                val = mouse[key] - bounds[key];
+                dragVal = null;
             }
+        } else {
+            dragVal *= 1;
         }
 
-        point[key] = val * 1;
+
+        if (dragVal != null) {
+
+            if (isRTL && axis === 'x') {
+                dragVal = bounds.width - dragVal;
+            }
+
+            dragVal += bounds[axis];
+        } else {
+            dragVal = val;
+        }
+
+        point[axis] = dragVal - itemBounds[axis];
     });
 
     return point;

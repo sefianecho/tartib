@@ -102,6 +102,10 @@ export const sortable = (tartib) => {
      */
     let isDragging = false;
 
+    /**
+     * Right To Left Direction.
+     */
+    let isRTL;
 
     /**
      * Starts dragging.
@@ -110,9 +114,10 @@ export const sortable = (tartib) => {
      */
     const dragStart = e => {
 
-        let { dragHandle, dragFrom, disabled, autoScroll } = config;
+        let { dragHandle, dragFrom, disabled, autoScroll, rtl } = config;
         let { target, pointerId, clientX, clientY } = e;
 
+        
         draggedItem = _getItem(target);
 
         /**
@@ -123,6 +128,7 @@ export const sortable = (tartib) => {
             return;
         }
 
+        isRTL = rtl;
         target.releasePointerCapture(pointerId);
         placeholder = draggedItem.cloneNode();
         placeholder.id = '';
@@ -148,7 +154,7 @@ export const sortable = (tartib) => {
             }
         }
 
-        dragPoint = getDragPoint(dragHandle ? target : draggedItem, dragFrom, startPoint);
+        dragPoint = getDragPoint(draggedItem, dragFrom, startPoint, dragHandle ? target : null, isRTL);
         scrollableAncestors = autoScroll ? getScrollableAncestors(el) : [];
         isDragging = true;
     }
@@ -220,16 +226,16 @@ export const sortable = (tartib) => {
                 // Sorting item diagonally.
                 if (! movingHorizontally && ! movingVertically) {
                     // Get position horizontally, pass it to the vertical position.
-                    position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', getPlaceholderPosition(bounds, startPoint, mouseX, 'x'));
+                    position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', isRTL, getPlaceholderPosition(bounds, startPoint, mouseX, 'x', isRTL));
                 } else {
                     // Sorting item vertically.
                     if (! movingHorizontally) {
-                        position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y');
+                        position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', isRTL);
                     }
 
                     // Sorting item horizontally.
                     if (! movingVertically) {
-                        position = getPlaceholderPosition(bounds, startPoint, mouseX, 'x');
+                        position = getPlaceholderPosition(bounds, startPoint, mouseX, 'x', isRTL);
                     }
                 }
 

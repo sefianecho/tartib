@@ -10,7 +10,9 @@ import { INSERT_AFTER, INSERT_BEFORE, METHODS } from "../constants";
  * @param {String|undefined} placeholderPosition - Used for the diagonal positionning, the position of the placeholder in the other axis.
  * @returns {String}
  */
-export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, axis, placeholderPosition) => {
+export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, axis, isRTL, placeholderPosition) => {
+
+    isRTL = axis === 'x' && isRTL;
 
     let position;
     let methods = METHODS[axis];
@@ -25,12 +27,12 @@ export const getPlaceholderPosition = (targetBounds, mouseStart, mousePosition, 
     // Otherwise, mouse is moving up or to the left.
     if (movement) {
         if (nextElMouseIntersection || placeholderPosition) {
-            position = INSERT_AFTER;
+            position = isRTL ? INSERT_BEFORE : INSERT_AFTER;
         }
     } else {
         // Mouse intersected the previous element.
         if (! nextElMouseIntersection || placeholderPosition) {
-            position = INSERT_BEFORE;
+            position = isRTL ? INSERT_AFTER : INSERT_BEFORE;
         }
     }
 
