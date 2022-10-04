@@ -1,14 +1,16 @@
 export const defaults = {
     /**
-     * x, y coordinates relative to the dragged element top left corner.
-     * x and y can be numbers or percentages, e.g. '50%'
+     * Object with x, y properties,
+     * drag items from the same position, x and y represent the coordinates,
+     * relative to the dragged item's top left corner, x and y can be,
+     * numbers or percentages, e.g. { x: '50%' } to center it horizontally.
      *
      * @type {Object}
      */
     dragFrom: {},
 
     /**
-     * Set cursor while dragging an item.
+     * Set the cursor while dragging an item (CSS cursor property).
      *
      * @type {String}
      */
@@ -22,22 +24,22 @@ export const defaults = {
     elevation: true,
 
     /**
-     * Adds class(es) to the dragged item. this(those) class(es),
-     * will be removed when dragging is done.
+     * Adds class(es) to the dragged item, theose classes,
+     * will be removed when the item is dropped.
      *
      * @type {String}
      */
     active: '',
 
     /**
-     * Adds class(es) to the placeholder.
+     * Add classes to the placeholder (The empty slot).
      *
      * @type {String}
      */
     placeholder: '',
 
     /**
-     * A Selector or an Element to drag the item from.
+     * A Selector or an Element, use it as a drag area within the item.
      *
      * @type {String|Element}
      */
@@ -48,21 +50,22 @@ export const defaults = {
      *
      * @type {String}
      */
-    axis: false,
+    axis: '',
 
     /**
-     * Disable sorting.
+     * Disable/Enable sorting.
      *
      * @type {Boolean}
      */
     disabled: false,
 
     /**
-     * Sets opacity to the dragged item, value must be between 0 and 1 exclusive.
+     * Apply opacity to the dragged item (during dragging),
+     * value must be between 0 and 1 exclusive
      *
      * @type {Number}
      */
-    opacity: false,
+    opacity: 1,
 
     /**
      * Auto scroll while dragging an item, to show out of viewport items.
@@ -72,7 +75,7 @@ export const defaults = {
     autoScroll: true,
 
     /**
-     * Sort right to left for the x axis.
+     * Right to Left direction.
      *
      * @type {Boolean}
      */
