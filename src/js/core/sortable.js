@@ -107,13 +107,20 @@ export const sortable = (tartib) => {
     let isRTL;
 
     /**
+     * Lock movement to one axis.
+     *
+     * @type {Object}
+     */
+    let axisLock;
+
+    /**
      * Starts dragging.
      *
      * @param {Event} e - Mousedown.
      */
     const dragStart = e => {
 
-        let { dragHandle, dragFrom, disabled, autoScroll, rtl } = config;
+        let { dragHandle, dragFrom, disabled, autoScroll, rtl, axis } = config;
         let { target, pointerId, clientX, clientY } = e;
 
         
@@ -128,6 +135,11 @@ export const sortable = (tartib) => {
         }
 
         isRTL = rtl;
+        axisLock = {
+            x: axis !== 'y',
+            y: axis !== 'x'
+        }
+
         target.releasePointerCapture(pointerId);
         placeholder = draggedItem.cloneNode();
         placeholder.id = '';
@@ -165,12 +177,11 @@ export const sortable = (tartib) => {
      */
     const dragMove = e => {
         if (isDragging) {
-            let { target: relatedTarget, clientX: mouseX, clientY: mouseY } = e;
+            let { target: relatedTarget, clientX, clientY } = e;
             let data;
 
             if (! startMoving) {
-
-                setItemPosition(mouseX, mouseY);
+                setItemPosition(startPoint.x, startPoint.y, {});
 
                 let { cursor, elevation, placeholder: placeholderClassname, opacity, active } = config;
                 let { width, height, x, y } = getBounds(draggedItem);
@@ -194,9 +205,13 @@ export const sortable = (tartib) => {
                 insertPlaceholder(INSERT_BEFORE, draggedItem, placeholder);
                 startMoving = true;
             }
-            // Move Item.
+
+            /**
+             * Move item.
+             */
+            setItemPosition(clientX, clientY, axisLock);
+
             itemBounds = getBounds(draggedItem);
-            setItemPosition(mouseX, mouseY, config.axis);
 
             data = {
                 x: itemBounds.x,
@@ -218,30 +233,31 @@ export const sortable = (tartib) => {
             if (el.contains(relatedTarget) && relatedTarget !== placeholder) {
                 let bounds = getBounds(relatedTarget);
                 let { top, right, bottom, left } = getBounds(placeholder);
-                let movingVertically = mouseX <= floor(right) && mouseX >= floor(left);
-                let movingHorizontally = mouseY <= floor(bottom) && mouseY >= floor(top);
+                let movingVertically = clientX <= floor(right) && clientX >= floor(left) && axisLock.y;
+                let movingHorizontally = clientY <= floor(bottom) && clientY >= floor(top) && axisLock.x;
                 let position;
 
                 // Sorting item diagonally.
-                if (! movingHorizontally && ! movingVertically) {
+                if (! movingHorizontally && ! movingVertically && (axisLock.x && axisLock.y)) {
                     // Get position horizontally, pass it to the vertical position.
-                    position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', false, getPlaceholderPosition(bounds, startPoint, mouseX, 'x', isRTL));
+                    position = getPlaceholderPosition(bounds, startPoint, clientX, 'x', isRTL);
+                    position = getPlaceholderPosition(bounds, startPoint, clientY, 'y', false, position);
                 } else {
                     // Sorting item vertically.
                     if (! movingHorizontally) {
-                        position = getPlaceholderPosition(bounds, startPoint, mouseY, 'y', false);
+                        position = getPlaceholderPosition(bounds, startPoint, clientY, 'y', false);
                     }
 
                     // Sorting item horizontally.
                     if (! movingVertically) {
-                        position = getPlaceholderPosition(bounds, startPoint, mouseX, 'x', isRTL);
+                        position = getPlaceholderPosition(bounds, startPoint, clientX, 'x', isRTL);
                     }
                 }
 
                 if (position) {
                     insertPlaceholder(position, relatedTarget, placeholder);
-                    startPoint.y = mouseY;
-                    startPoint.x = mouseX;
+                    startPoint.y = clientY;
+                    startPoint.x = clientX;
 
                     /**
                      * Fire sort event.
@@ -305,11 +321,12 @@ export const sortable = (tartib) => {
      * @param {Object} axis - Axis option.
      */
     const setItemPosition = (x, y, axis) => {
-        if (axis !== 'x') {
+
+        if (axis.y) {
             draggedItem.style.top = y - dragPoint.y + 'px';
         }
 
-        if (axis !== 'y') {
+        if (axis.x) {
             draggedItem.style.left = x - dragPoint.x + 'px';
         }
     }
