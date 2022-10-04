@@ -56,17 +56,20 @@ export const inlineStyles = (el, styles) => {
  * @param {Boolean} remove - Whether to remove classes.
  */
 const updateList = (el, classes, remove) => {
+
     if (isString(classes)) {
-        classes = classes.trim().split(/\s+/);
+        classes = [classes];
     }
 
-    if (Array.isArray(classes)) {
-        classes.forEach(cls => {
-            if (cls && isString(cls) && cls.trim()) {
+    classes.forEach(classname => {
+        classname = isString(classname) && classname.split(/\s+/);
+
+        classname.forEach(cls => {
+            if (cls) {
                 el.classList[remove ? 'remove' : 'add'](cls);
             }
         });
-    }
+    });
 }
 
 /**
@@ -76,11 +79,21 @@ const updateList = (el, classes, remove) => {
  * @returns {Object}
  */
 export const classList = el => ({
-    _add(cls) {
-        updateList(el, cls);
+    /**
+     * Adds classes to el classList.
+     *
+     * @param {Array|String} classes - Classes to add.
+     */
+    _add(classes) {
+        updateList(el, classes);
     },
 
-    _remove(cls) {
-        updateList(el, cls, true);
+    /**
+     * Removes classes from el classList.
+     *
+     * @param {Array|String} classes - Classes to remove.
+     */
+    _remove(classes) {
+        updateList(el, classes, true);
     }
 });
