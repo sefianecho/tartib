@@ -6,7 +6,7 @@ import { getDragPoint } from "../utils/dragPoint";
 import { EventBinder } from "./events/binder";
 import { getScrollableAncestors } from "../scroll/scrollable";
 import { insertPlaceholder } from "../placeholder/insert";
-import { CHANGE_EVENT, END_EVENT, floor, HTML, INSERT_BEFORE, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
+import { CHANGE_EVENT, END_EVENT, floor, HTML, INSERT_BEFORE, METHODS, MOVE_EVENT, ROOT, SORT_EVENT, START_EVENT } from "../constants";
 import { List } from "./list";
 
 /**
@@ -321,6 +321,11 @@ export const sortable = (tartib) => {
      * @param {Object} axis - Axis option.
      */
     const setItemPosition = (x, y, axis) => {
+
+        if (isRTL) {
+            x -= HTML[METHODS.x._scrollProperty];
+        }
+
 
         if (axis.y) {
             draggedItem.style.top = y - dragPoint.y + 'px';
