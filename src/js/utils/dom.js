@@ -78,22 +78,21 @@ const updateList = (el, classes, remove) => {
  * @param {Element} el - Any DOM Element.
  * @returns {Object}
  */
-export const classList = el => ({
+export const classList = (el) => ({
     /**
      * Adds classes to el classList.
      *
      * @param {Array|String} classes - Classes to add.
      */
     _add(classes) {
+        this._classes = classes;
         updateList(el, classes);
     },
 
     /**
-     * Removes classes from el classList.
-     *
-     * @param {Array|String} classes - Classes to remove.
+     * Removes all added classes from el classList.
      */
-    _remove(classes) {
-        updateList(el, classes, true);
+    _remove() {
+        updateList(el, this._classes, true);
     }
 });

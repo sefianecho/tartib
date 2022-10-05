@@ -50,11 +50,11 @@ export const sortable = (tartib) => {
     let scrollableAncestors;
 
     /**
-     * Dragged Item classList.
-     *
-     * @type {Object}
+     * Elements classLists.
      */
-    let itemClassList;
+    let classLists = {
+        _list: classList(el),
+    }
 
     /**
      * Dragged Item Bounding rect.
@@ -120,7 +120,7 @@ export const sortable = (tartib) => {
      */
     const dragStart = e => {
 
-        let { dragHandle, dragFrom, disabled, autoScroll, rtl, axis } = config;
+        let { dragHandle, dragFrom, disabled, autoScroll, rtl, axis, cursor } = config;
         let { target, pointerId, clientX, clientY } = e;
 
         
@@ -145,7 +145,12 @@ export const sortable = (tartib) => {
         placeholder.id = '';
         startList = _getItems();
 
-        itemClassList = classList(draggedItem);
+
+        classLists._item = classList(draggedItem);
+        classLists._placeholder = classList(placeholder);
+
+        classLists._list._add(ACTIVE_CLASSNAME);
+        inlineStyles(HTML, { cursor });
 
         startPoint = {
             x: clientX,
@@ -183,25 +188,26 @@ export const sortable = (tartib) => {
             if (! startMoving) {
                 setItemPosition(startPoint.x, startPoint.y, {});
 
-                let { cursor, elevation, placeholder: placeholderClassname, opacity, active } = config;
+                let { elevation, placeholder: placeholderClassname, opacity, active } = config;
                 let { width, height, x, y } = getBounds(draggedItem);
 
                 height += 'px';
                 width += 'px';
-                classList(el)._add(ACTIVE_CLASSNAME);
                 inlineStyles(draggedItem, {
                     width,
                     height,
                     opacity: opacity > 0 && opacity < 1 ? opacity : false,
                 });
-                inlineStyles(HTML, { cursor });
                 inlineStyles(placeholder, { height });
 
+                /**
+                 * Fire start event.
+                 */
                 _emit(START_EVENT, eventObject, { x, y });
 
-                itemClassList._add([ITEM_DRAGGED_CLASSNAME, elevation && ELEVATION_CLASSNAME, active]);
+                classLists._item._add([ITEM_DRAGGED_CLASSNAME, elevation && ELEVATION_CLASSNAME, active]);
+                classLists._placeholder._add(placeholderClassname || PLACEHOLDER_CLASSNAME);
 
-                classList(placeholder)._add(placeholderClassname || PLACEHOLDER_CLASSNAME);
                 insertPlaceholder(INSERT_BEFORE, draggedItem, placeholder);
                 startMoving = true;
             }
@@ -293,8 +299,8 @@ export const sortable = (tartib) => {
             inlineStyles(draggedItem);
             inlineStyles(HTML, { cursor: '' });
 
-            classList(el)._remove(ACTIVE_CLASSNAME);
-            itemClassList._remove([ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME, config.active]);
+            classLists._item._remove();
+            classLists._list._remove();
 
             if (startList.some((item, index) => item !== endList[index])) {
                 /**
