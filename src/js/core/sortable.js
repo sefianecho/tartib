@@ -1,4 +1,4 @@
-import { ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, PLACEHOLDER_CLASSNAME } from "../utils/classes";
+import { ACTIVE_CLASSNAME, ELEVATION_CLASSNAME, ITEM_DRAGGED_CLASSNAME, PLACEHOLDER_CLASSNAME } from "../utils/classes";
 import { getPlaceholderPosition } from "../placeholder/position";
 import { autoScroll } from "../scroll/autoScroll";
 import { classList, getBounds, getElement, getParent, inlineStyles } from "../utils/dom";
@@ -188,7 +188,7 @@ export const sortable = (tartib) => {
 
                 height += 'px';
                 width += 'px';
-
+                classList(el)._add(ACTIVE_CLASSNAME);
                 inlineStyles(draggedItem, {
                     width,
                     height,
@@ -293,6 +293,7 @@ export const sortable = (tartib) => {
             inlineStyles(draggedItem);
             inlineStyles(HTML, { cursor: '' });
 
+            classList(el)._remove(ACTIVE_CLASSNAME);
             itemClassList._remove([ITEM_DRAGGED_CLASSNAME, ELEVATION_CLASSNAME, config.active]);
 
             if (startList.some((item, index) => item !== endList[index])) {
