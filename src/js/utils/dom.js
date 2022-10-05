@@ -62,9 +62,7 @@ const updateList = (el, classes, remove) => {
     }
 
     classes.forEach(classname => {
-        classname = isString(classname) && classname.split(/\s+/);
-
-        classname.forEach(cls => {
+        isString(classname) && classname.split(/\s+/).forEach(cls => {
             if (cls) {
                 el.classList[remove ? 'remove' : 'add'](cls);
             }
