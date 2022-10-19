@@ -39,6 +39,11 @@ h1, h2 {
     margin-bottom: 0.25em;
 }
 
+.title h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .title span {
     color: #444;
 }
