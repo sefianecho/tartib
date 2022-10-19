@@ -121,7 +121,7 @@ export const sortable = (tartib) => {
     const dragStart = e => {
 
         let { dragHandle, dragFrom, disabled, autoScroll, rtl, axis, cursor } = config;
-        let { target, pointerId, clientX, clientY } = e;
+        let { target, pointerId, clientX, clientY, button } = e;
 
         
         draggedItem = _getItem(target);
@@ -129,8 +129,9 @@ export const sortable = (tartib) => {
         /**
          * Exit, if disabled or pointer down wasn't in a list item,
          * or in a drag handle.
+         * or it's not the main button in case of a mouse click.
          */
-        if (disabled || !draggedItem || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
+        if (disabled || !draggedItem || button || (dragHandle && target !== getElement(dragHandle, draggedItem))) {
             return;
         }
 
