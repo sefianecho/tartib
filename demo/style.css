@@ -6,7 +6,6 @@ body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    /* background-color: #f0f0f0; */
 }
 
 header {
@@ -151,7 +150,6 @@ li.placeholder {
 }
 
 li.item {
-    /* opacity: 0.8; */
     background-color: rgb(202, 224, 177);
     color:#4c7a16;
     border-color: 1px solid #4c7a16;
