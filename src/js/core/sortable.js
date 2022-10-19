@@ -286,7 +286,7 @@ export const sortable = (tartib) => {
     const dragEnd = e => {
         if (isDragging) {
 
-            if (getParent(placeholder) === el) {
+            if (getParent(placeholder)) {
                 el.replaceChild(draggedItem, placeholder);
                 placeholder = null;
             }
