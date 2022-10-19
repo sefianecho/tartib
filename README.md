@@ -9,7 +9,7 @@ Reorder a list of DOM elements, by dragging an element within the list to occupy
 - Sort list with items aligned horizontally, vertically or in a grid.
 
 ## Demo
-
+[Click here](https://sofianchouaib.github.io/tartib/)
 ## Getting started
 Install using package manager:
 ```bash
