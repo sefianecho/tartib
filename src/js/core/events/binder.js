@@ -21,9 +21,11 @@ export const EventBinder = () => {
          * Registers and Adds an event listener.
          */
         _bind(target, type, handler) {
-            let listener = [target, type, handler];
-            binder(listener);
-            listeners.push(listener);
+            if (target) {
+                let listener = [target, type, handler];
+                binder(listener);
+                listeners.push(listener);
+            }
         },
 
         /**

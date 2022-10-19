@@ -57,17 +57,19 @@ export const inlineStyles = (el, styles) => {
  */
 const updateList = (el, classes, remove) => {
 
-    if (isString(classes)) {
-        classes = [classes];
-    }
-
-    classes.forEach(classname => {
-        isString(classname) && classname.split(/\s+/).forEach(cls => {
-            if (cls) {
-                el.classList[remove ? 'remove' : 'add'](cls);
-            }
+    if (classes) {
+        if (isString(classes)) {
+            classes = [classes];
+        }
+    
+        classes.forEach(classname => {
+            isString(classname) && classname.split(/\s+/).forEach(cls => {
+                if (cls) {
+                    el.classList[remove ? 'remove' : 'add'](cls);
+                }
+            });
         });
-    });
+    }
 }
 
 /**
