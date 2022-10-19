@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tartib Demo: Sortable list</title>
+    <link rel="stylesheet" href="dist/css/tartib.min.css">
+    <link rel="stylesheet" href="demo/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <header>
+        <div class="container">
+            <div class="inner-header">
+
+                <div class="title">
+                    <h1>Tartib</h1>
+                    <span>Sort a DOM Elements List.</span>
+                </div>
+        
+        
+                <a href="https://github.com/SofianChouaib/" class="button github-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <span>Github</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="main-content">
+                <div class="side-panel">
+                    <nav>
+                        <ul>
+                            <li><a class="active" href="#vertical-list">Vertical List</a></li>
+                            <li><a href="#horizontal-list">Horizontal List</a></li>
+                            <li><a href="#grid-list">Grid List</a></li>
+                            <li><a href="#list-with-handle">List With a Drag Handle</a></li>
+                            <li><a href="#list-placeholder-styles">List With Placeholder styles</a></li>
+                            <li><a href="#list-item-styles">List With Active Item styles</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <div class="preview-area">
+                    <section id="vertical-list">
+                        <h2>Vertical list</h2>
+                        <ul id="vertical-list" class="tartib vertical">
+                            <li class="tartib__item">One</li>
+                            <li class="tartib__item">Two</li>
+                            <li class="tartib__item">Three</li>
+                            <li class="tartib__item">Four</li>
+                            <li class="tartib__item">Five</li>
+                            <li class="tartib__item">Six</li>
+                        </ul>
+                    </section>
+                    <!-- #vertical-list -->
+        
+                    <section id="horizontal-list">
+                        <h2>Horizontal list</h2>
+                        <ul class="tartib horizontal">
+                            <li class="tartib__item">One</li>
+                            <li class="tartib__item">Two</li>
+                            <li class="tartib__item">Three</li>
+                            <li class="tartib__item">Four</li>
+                        </ul>
+                    </section>
+                    <!-- #horizontal-list -->
+            
+                    <section id="grid-list">
+                        <h2>Grid list</h2>
+                        <ul class="tartib grid">
+                            <li class="tartib__item">1</li>
+                            <li class="tartib__item">2</li>
+                            <li class="tartib__item">3</li>
+                            <li class="tartib__item">4</li>
+                            <li class="tartib__item">5</li>
+                            <li class="tartib__item">6</li>
+                            <li class="tartib__item">7</li>
+                            <li class="tartib__item">8</li>
+                            <li class="tartib__item">9</li>
+                        </ul>
+                    </section>
+                    <!-- #grid-list -->
+        
+                    <section id="list-with-handle">
+                        <h2>Items Width Drag Handle</h2>
+                        <ul class="tartib with-handle">
+                            <li class="tartib__item">
+                                <div class="handle">
+                                    <svg width="30" height="30" viewBox="0 0 24 24">
+                                        <path d="M15 15.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 8.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609zM9 3.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM9 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM11.016 18q0 0.797-0.609 1.406t-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406z"></path>
+                                    </svg>
+                                </div>
+                                One
+                            </li>
+                            <li class="tartib__item">
+                                <div class="handle">
+                                    <svg width="30" height="30" viewBox="0 0 24 24">
+                                        <path d="M15 15.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 8.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609zM9 3.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM9 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM11.016 18q0 0.797-0.609 1.406t-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406z"></path>
+                                    </svg>
+                                </div>
+                                Two
+                            </li>
+                            <li class="tartib__item">
+                                <div class="handle">
+                                    <svg width="30" height="30" viewBox="0 0 24 24">
+                                        <path d="M15 15.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 8.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609zM9 3.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM9 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM11.016 18q0 0.797-0.609 1.406t-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406z"></path>
+                                    </svg>
+                                </div>
+                                Three
+                            </li>
+                            <li class="tartib__item">
+                                <div class="handle">
+                                    <svg width="30" height="30" viewBox="0 0 24 24">
+                                        <path d="M15 15.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 8.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609zM9 3.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM9 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM11.016 18q0 0.797-0.609 1.406t-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406z"></path>
+                                    </svg>
+                                </div>
+                                Four
+                            </li>
+                            <li class="tartib__item">
+                                <div class="handle">
+                                    <svg width="30" height="30" viewBox="0 0 24 24">
+                                        <path d="M15 15.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 8.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609zM9 3.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM9 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM11.016 18q0 0.797-0.609 1.406t-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406z"></path>
+                                    </svg>
+                                </div>
+                                Five
+                            </li>
+                            <li class="tartib__item">
+                                <div class="handle">
+                                    <svg width="30" height="30" viewBox="0 0 24 24">
+                                        <path d="M15 15.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM15 8.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609zM9 3.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM9 9.984q0.797 0 1.406 0.609t0.609 1.406-0.609 1.406-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609zM11.016 18q0 0.797-0.609 1.406t-1.406 0.609-1.406-0.609-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406z"></path>
+                                    </svg>
+                                </div>
+                                Six
+                            </li>
+                        </ul>
+                    </section>
+                    <!-- #list-with-handle -->
+        
+                    <section id="list-placeholder-styles">
+                        <h2>Custom style for the placeholder</h2>
+                        <ul class="tartib placeholder-style">
+                            <li class="tartib__item">One</li>
+                            <li class="tartib__item">Two</li>
+                            <li class="tartib__item">Three</li>
+                            <li class="tartib__item">Four</li>
+                            <li class="tartib__item">Five</li>
+                            <li class="tartib__item">Six</li>
+                        </ul>
+                    </section>
+                    <!-- #list-placeholder-styles -->
+        
+                    <section id="list-item-styles">
+                        <h2>Custom style for the active Item</h2>
+                        <ul class="tartib item-style">
+                            <li class="tartib__item">One</li>
+                            <li class="tartib__item">Two</li>
+                            <li class="tartib__item">Three</li>
+                            <li class="tartib__item">Four</li>
+                            <li class="tartib__item">Five</li>
+                            <li class="tartib__item">Six</li>
+                        </ul>
+                    </section>
+                    <!-- #list-item-styles -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+
+
+
+    <script src="dist/js/tartib.min.js"></script>
+    <script src="demo/main.js"></script>
+</body>
+</html>
