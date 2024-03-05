@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SofianChouaib/tartib.git"
+    "url": "git+https://github.com/sefianecho/tartib.git"
   },
   "author": "Sefiane Chouaib",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SofianChouaib/tartib/issues"
+    "url": "https://github.com/sefianecho/tartib/issues"
   },
-  "homepage": "https://github.com/SofianChouaib/tartib#readme",
+  "homepage": "https://github.com/sefianecho/tartib#readme",
   "devDependencies": {
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
