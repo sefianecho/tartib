@@ -1,6 +1,6 @@
 {
   "name": "tartib",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Reorder a list of DOM elements, by dragging an element within the list to occupy another position, other elements will shift to create a slot for the dragged element.",
   "main": "dist/js/tartib.min.js",
   "scripts": {
